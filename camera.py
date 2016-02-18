@@ -1,21 +1,20 @@
 import RPi.GPIO as GPIO
 import picamera, datetime
 import os, os.path, sys, json
-import updater
+from quadlib import updater
 
 
 camera = picamera.PiCamera()
 camera.hflip = True
 camera.vflip = True
 
-
-with open('sshsettings.json') as sshsettingsfile:
+with open(os.path.join(os.path.dirname(__file__), 'config/sshsettings.json')) as sshsettingsfile:
 	sshsettings = json.load(sshsettingsfile)
 
 isBoss = not os.path.isfile('bossip')
 
 if (not isBoss):
-	with open('bossip', 'r') as myfile:
+	with open('config/bossip', 'r') as myfile:
 		bossip = myfile.read()
 else:
 	updater.push(sshsettings)
@@ -23,7 +22,7 @@ else:
 sys.exit()
 
 
-with open('camerano', 'r') as camnofile:
+with open('config/camerano', 'r') as camnofile:
 	camerano = camnofile.read()
 print "Camera number(change it in camerano file): " + str(camerano)
 

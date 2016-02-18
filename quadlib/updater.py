@@ -6,13 +6,20 @@ def myip():
 def pushToEmployee(no, ip, settings):
 	print "[sync] Updating " + str(no) + " @" + ip	
 
-	os.system('sshpass -p "' + settings["sshpasswd"] + '" ssh pi@'+ip+' "echo '+no+' > camerano"')
+	cmd = "mkdir -p " + settings["sshpath"]+'/percamcoonfig/; '
+	cmd += "cd " + settings["sshpath"]+'/percamcoonfig/; '
+	cmd += "echo "+no+" > camerano; "
+	cmd += "echo '"+myip()+"' > bossip; "
+	
+	os.system('sshpass -p "' + settings["sshpasswd"] + '" ssh pi@'+ip+' "'+cmd+'"')
 
-	with open('sync.json') as syncfilelistfile:
+	filelist = ' '
+
+	with open(os.path.join(os.path.dirname(__file__), 'sync.json')) as syncfilelistfile:
                 files = json.load(syncfilelistfile)
-		for file in files:
-			print "[sync] sending " + file		
-			os.system('sshpass -p "' + settings["sshpasswd"] + '" scp '+file+' '+settings["sshusername"] + '@'+ ip + ':' + settings["sshpath"])
+		filelist = filelist.join(files)
+		print "[sync] sending files " + filelist		
+		os.system('cd '+os.path.join(os.path.dirname(__file__))+'/.. ;sshpass -p "' + settings["sshpasswd"] + '" scp -r '+filelist+' '+settings["sshusername"] + '@'+ ip + ':' + settings["sshpath"])
 			
 
 def uploadPhoto(file, settings):
@@ -22,7 +29,7 @@ def uploadPhoto(file, settings):
 
 def push(sshsettings):
 	print "[sync] sending files to the other PIs"
-	with open('employers.json') as employeefile:    
+	with open(os.path.join(os.path.dirname(__file__), '../config/employees.json')) as employeefile:    
 		employees = json.load(employeefile)
 		for emp in employees.keys(): 
 			ip = employees[emp]

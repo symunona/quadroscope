@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import picamera, datetime
-import os, os.path, sys, json
+import os, os.path, sys, json, time
 from quadlib import updater
 from quadlib import convert
 
@@ -13,7 +13,7 @@ camera.vflip = True
 with open(root+'config/settings.json') as sshsettingsfile:
 	settings = json.load(sshsettingsfile)
 
-isBoss = not os.path.isfile(root+'percamconfig/bossip')
+isBoss = os.path.isfile(root+'percamconfig/boss')
 
 if (not isBoss):
 	with open(root+'percamconfig/bossip', 'r') as myfile:
@@ -31,37 +31,45 @@ with open(root+'percamconfig/camerano', 'r') as camnofile:
 print "[root] Camera number(change it in camerano file): " + str(camerano)
 
 
-
-def loadCameraSettings():
-	with open(root + 'config/camerasettings.json') as camsettingsfile:
-        	return json.load(camsettingsfile)
-
-def saveCameraSettings(cameraSettings):
-        with open(root + 'config/camerasettings.json', 'w') as outfile:
-                json.dump(cameraSettings, outfile)
-
-
 if (isBoss):
 	port = settings['gpioBossTriggerPort']
 else:
 	port = settings['gpioEmployeeTriggerPort']
 
-GPIO.cleanup()
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(port, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+
+
+CAMLED = 32
+# Set GPIO to output
+GPIO.setup(CAMLED, GPIO.OUT, initial=False) 
+
+# Five iterations with half a second
+# between on and off
+for i in range(3):
+	GPIO.output(CAMLED,True) # On
+	time.sleep(0.5)
+	GPIO.output(CAMLED,False) # Off
+	time.sleep(0.5)
+GPIO.output(CAMLED,True) # Off
+time.sleep(1.5)
+GPIO.output(CAMLED,False)
+
 
 if isBoss:
 	triggerport = settings['gpioEmployeeTriggerPort']
 	GPIO.setup( triggerport , GPIO.OUT )
 	GPIO.output( triggerport, False )
 
+
 def takePicture(fileid):
 
-        filename = settings['uploadpath']+'/'+fileid+'_'+str(camerano)+'_img.jpg'	
+        filename = settings['uploadpath']+fileid+'_'+str(camerano)+'_img.jpg'	
 
         print("[listener] Taking picture: " + filename)
-
+	GPIO.output(CAMLED,True)
         camera.capture(filename)
+	GPIO.output(CAMLED,False)
 
 	return filename;
 
@@ -75,6 +83,15 @@ def loadCameraSettings():
 def saveCameraSettings(cameraSettings):
         with open(root + 'config/camerasettings.json', 'w') as outfile:
                 json.dump(cameraSettings, outfile)
+
+def loadCameraSettings():
+        with open(root + 'config/camerasettings.json') as camsettingsfile:
+                return json.load(camsettingsfile)
+
+def saveCameraSettings(cameraSettings):
+        with open(root + 'config/camerasettings.json', 'w') as outfile:
+                json.dump(cameraSettings, outfile)
+
 
 
 cameraSettings = loadCameraSettings()
@@ -104,7 +121,7 @@ while True:
 	if isBoss:
 		GPIO.output(triggerport, False)
 		print "[listener] i is the boss, creating gif..."
-		convert.waitForFiles(fileid, settings);
+		convert.waitForFiles(fileid, employees, settings);
 	
 	if not isBoss:
 		print "[listener] i am an employee. Uploading image to boss@" + bossip		

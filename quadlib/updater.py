@@ -27,7 +27,7 @@ def pushToEmployee(no, ip, settings):
 		os.system('cd '+root+'/.. ;sshpass -p "' + settings["sshpasswd"] + '" scp -r '+filelist+' '+settings["sshusername"] + '@'+ ip + ':' + settings["sshpath"])
 
 	restartscript = "sshpass -p '" + settings["sshpasswd"] + "' ssh "+settings["sshusername"] +'@'+ip+' "'
-	restartscript += "python " + settings["sshpath"] +'camera.py > /dev/null & "'
+	restartscript += "python " + settings["sshpath"] +'camera.py > /home/pi/kamera.log & "'
 	os.system(restartscript)
 
 			
@@ -50,7 +50,6 @@ def push(settings):
 			ip = employees[emp]
 			
 			if myip() != ip:
-				print "sync: " + myip() + "==" + ip + " = false"			
 				pushToEmployee(emp, ip, settings)
 			else:
 				print "[sync] That's me: " + ip

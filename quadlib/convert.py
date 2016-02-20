@@ -7,7 +7,7 @@ def waitForFiles(id, employees, settings, camerasettings):
 	createGif(id, employees, settings, camerasettings)
 
 def createGif(id, employees, settings, camerasettings):	
-	cmd = 'convert -delay '+camerasettings['delay']+' -size 640x480 -loop 0 '
+	cmd = 'convert -delay '+str(camerasettings['delay'])+' -size 640x480 -loop 0 '
 	foundpics = 0
 	pictureCnt = len(employees.keys())
 	for i in range(pictureCnt):

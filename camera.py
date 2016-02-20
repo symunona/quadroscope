@@ -3,6 +3,7 @@ import picamera, datetime
 import os, os.path, sys, json, time
 from quadlib import updater
 from quadlib import convert
+import thread
 
 root = os.path.dirname(__file__) + '/'
 
@@ -119,7 +120,11 @@ while True:
 	if isBoss:
 		triggerEmployees(False)
 		print "[listener] i is the boss, creating gif..."
-		convert.waitForFiles(fileid, employees, settings, cameraSettings);
+
+		thread.start_new_thread( convert.waitForFiles, (fileid, employees, settings, cameraSettings, ))		
+#		thread = Thread( convert.waitForFiles, args = (fileid, employees, settings, cameraSettings))
+#		thread.start()
+#		convert.waitForFiles(fileid, employees, settings, cameraSettings);
 	
 	if not isBoss:
 		print "[listener] i am an employee. Uploading image to boss@" + bossip		

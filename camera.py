@@ -5,7 +5,7 @@ from quadlib import updater
 from quadlib import convert
 
 root = os.path.dirname(__file__) + '/'
-#print "project root " +root + " file: " + __file__
+
 camera = picamera.PiCamera()
 camera.hflip = True
 camera.vflip = True
@@ -17,19 +17,13 @@ isBoss = os.path.isfile(root+'percamconfig/boss')
 
 if (not isBoss):
 	with open(root+'percamconfig/bossip', 'r') as myfile:
-		bossip = myfile.read().strip('\n')
-	
-#	print '[root] i am an employee. The boss is ' + bossip
+		bossip = myfile.read().strip('\n')	
 else:
 	employees = updater.push(settings)
-#	print '[root] i am the boss ' + root+'percamconfig/bossip'
-
-#sys.exit()
 
 with open(root+'percamconfig/camerano', 'r') as camnofile:
 	camerano = camnofile.read().strip('\n')
 print "[root] Camera number(change it in camerano file): " + str(camerano)
-
 
 if (isBoss):
 	port = settings['gpioBossTriggerPort']
@@ -41,6 +35,7 @@ GPIO.setup(port, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 
 CAMLED = 32
+
 # Set GPIO to output
 GPIO.setup(CAMLED, GPIO.OUT, initial=False) 
 
@@ -55,12 +50,13 @@ GPIO.output(CAMLED,True) # Off
 time.sleep(1.5)
 GPIO.output(CAMLED,False)
 
-
 if isBoss:
 	triggerport = settings['gpioEmployeeTriggerPort']
 	GPIO.setup( triggerport , GPIO.OUT )
 	GPIO.output( triggerport, False )
-
+	for i in employees:
+		GPIO.setup( employees[i]['gpio'] , GPIO.OUT )
+	        GPIO.output( triggerport, False )		
 
 def takePicture(fileid):
 
@@ -92,7 +88,9 @@ def saveCameraSettings(cameraSettings):
         with open(root + 'config/camerasettings.json', 'w') as outfile:
                 json.dump(cameraSettings, outfile)
 
-
+def triggerEmployees(val):
+        for i in employees:
+                GPIO.output( employees[i]['gpio'], val )
 
 cameraSettings = loadCameraSettings()
 	
@@ -108,7 +106,7 @@ while True:
 		cameraSettings['nextid'] = fileid
 		saveCameraSettings(cameraSettings)
 		updater.syncCameraSettings(employees, settings)	
-		GPIO.output(triggerport, True)
+		triggerEmployees( True )
 	else: 
 		cameraSettings = loadCameraSettings()		
 		fileid = cameraSettings['nextid']
@@ -119,9 +117,9 @@ while True:
 		GPIO.wait_for_edge(port, GPIO.FALLING)
 			
 	if isBoss:
-		GPIO.output(triggerport, False)
+		triggerEmployees(False)
 		print "[listener] i is the boss, creating gif..."
-		convert.waitForFiles(fileid, employees, settings);
+		convert.waitForFiles(fileid, employees, settings, cameraSettings);
 	
 	if not isBoss:
 		print "[listener] i am an employee. Uploading image to boss@" + bossip		

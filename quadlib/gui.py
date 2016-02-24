@@ -1,7 +1,7 @@
 import sys
 import pygame
 import picamera
-from menu import Menu
+
 from pygame import time
 from CameraWrapper import CameraWrapper
 

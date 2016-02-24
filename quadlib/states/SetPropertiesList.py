@@ -1,18 +1,20 @@
 from State import State
-import camera_settings
+import CameraSettings
+from SetProperty import SetProperty 
+import pygame
 import utils
 from Scroller import Scroller
 
 lineheight = 40
 
 class SetPropertiesList(State):
-    def __init__(self, stack):
+    def __init__(self, stack, camera):
         State.__init__(self, stack)
-
-        self.title  = 'setProperties'
+        self.camera = camera
+        self.title  = 'setproperties'
         
         self.settings_menu = []     
-        for setting in camera_settings.camera_settings:            
+        for setting in CameraSettings.camera_settings:            
             menuitem = setting['key']        
             self.settings_menu.append(menuitem)
             
@@ -20,20 +22,22 @@ class SetPropertiesList(State):
         
     def draw(self, surface):
         State.draw(self, surface)
-        for i in range (5):
-            txt = self.scroller.get_value( self.scroller.get_index() - 2 + i )
-            color = (255,255,255)
-            if (i == 2):
-                color = (0, 255, 255)
-            utils.txt(surface, 60, 100 + (i*lineheight), txt, color )
+        for i in range (7):
+            txt = self.scroller.get_value( self.scroller.get_index() - 3 + i )
+            value = self.camera.get_property_value(txt)
+            
+            color = (200,200,200)
+            if (i == 3):
+                color = (128, 128, 255)
+            utils.txt(surface, 60, 90 + (i*lineheight), txt, color )
+            utils.txt(surface, 450, 90 + (i*lineheight), value, (0,200,200), )
         
     def event(self, event):
         State.event(self, event)
         self.scroller.event(event)                
         
-         
-        # if event.type == pygame.MOUSEBUTTONDOWN:                        
-        #     if event.button == 2 : 
-        #         if self.scroller.get_value() == 'setproperty':
-        #             print 'setproperty'
+        if event.type == pygame.MOUSEBUTTONDOWN:                        
+            if event.button == 2 :
+                SetProperty(self.stack, self.camera, self.scroller.get_value()) 
+                
                     

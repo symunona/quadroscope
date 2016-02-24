@@ -3,6 +3,7 @@ import pygame
 import picamera
 from menu import Menu
 from pygame import time
+from CameraWrapper import CameraWrapper
 
 from states import MainState
 
@@ -63,7 +64,7 @@ def main():
     camera.start_preview()
     
     state_stack = []    
-    MainState.MainState(state_stack)
+    MainState.MainState(state_stack, CameraWrapper(camera))
     
     #screen = pygame.display.set_mode(screenSize,0)
     camera.start_preview()

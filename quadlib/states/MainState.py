@@ -7,9 +7,10 @@ from Scroller import Scroller
 
 class MainState(State):
     
-    def __init__(self, stack):
+    def __init__(self, stack, camera):
         State.__init__(self, stack)
 
+        self.camera = camera
         self.title  = 'main'
         self.modes  = 'overview setproperty clean guide player presets'.split(' ')
         self.scroller = Scroller(self.modes, 0)        
@@ -23,8 +24,7 @@ class MainState(State):
         if event.type == pygame.MOUSEBUTTONDOWN:                        
             if event.button == 2 : 
                 if self.scroller.get_value() == 'setproperty':
-                    print 'setproperty'
-                    SetPropertiesList(self.stack)
+                    SetPropertiesList(self.stack, self.camera)
                     
         
     def draw(self, surface):

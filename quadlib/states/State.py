@@ -5,10 +5,12 @@ class State:
     def __init__(self, stack):       
         self.stack = stack         
         stack.insert(0, self)
-        self.fontobject=pygame.font.SysFont('Arial', 28)     
+        self.fontobject=pygame.font.SysFont('Arial', 28)    
+         
     def back(self):
+        print self.stack
         if len(self.stack) > 1 :
-            self.stack.pop()
+            self.stack.pop(0)
             
     def draw(self, surface): 
         if len(self.title) > 0:                         

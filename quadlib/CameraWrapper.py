@@ -23,8 +23,10 @@ class CameraWrapper:
             # if it is set in the JSON, retriev it, else return with default
             actual_value = None
             if key in self.actual_camera_settings.keys():
+                # print 'in', key, self.actual_camera_settings.keys()
                 return self.actual_camera_settings[key]
-            else: 
+            else:
+                # print 'not in' , key, self.actual_camera_settings.keys()
                 return property['default']
         try:
             actual_value = getattr(self.camera, key)
@@ -39,7 +41,7 @@ class CameraWrapper:
         if self.property_live(key):
             setattr(self.camera, key, value)
             
-        self.actual_camera_settings['key'] = value
-    
+        self.actual_camera_settings[key] = value
+            
     def save_settings(self):
         utils.save_camera_settings(self.actual_camera_settings)

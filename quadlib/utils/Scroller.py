@@ -1,5 +1,6 @@
 import pygame
 import math
+import mouse
 
 class Scroller:
 
@@ -21,8 +22,11 @@ class Scroller:
             return self.elements[index]
     
     def event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:                        
-            if event.button == 4 : self.selected -= 1
-            if event.button == 5 : self.selected += 1
+        if event.type == mouse.MOUSEWHEEL:
+            self.selected += event.delta
             if self.selected >= len(self.elements): self.selected = 0
             if self.selected < 0: self.selected = len(self.elements)-1
+
+        # if event.type == pygame.MOUSEBUTTONDOWN:                        
+        #     if event.button == 4 : self.selected -= 1
+        #     if event.button == 5 : self.selected += 1

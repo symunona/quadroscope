@@ -1,7 +1,9 @@
 from State import State
 import pygame
 import utils
-from Scroller import Scroller
+from utils.Scroller import Scroller
+
+from utils import mouse
 
 lineheight = 40
 offsety = 340
@@ -33,20 +35,16 @@ class SetProperty(State):
             
         # self.camera.set_property(self.propertykey, )
         
+        if event.type == mouse.MOUSEWHEEL:        
+            if self.property['type'] == 'numeric':                                
+                delta = self.property['step'] * event.delta;                        
+                
+                current_value = self.camera.get_property_value(self.propertykey)
+                current_value += delta
+                current_value = utils.limit(self.property['min'], self.property['max'], current_value)                                          
+                self.camera.set_property(self.propertykey, current_value) 
+
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.property['type'] == 'numeric':
-                delta = 0
-                if event.button == 4:
-                    delta = self.property['step'];
-                else: 
-                    if event.button == 5:
-                        delta = -self.property['step'];
-                        
-                if (delta != 0):
-                    current_value = self.camera.get_property_value(self.propertykey)
-                    current_value += delta
-                    current_value = utils.limit(self.property['min'], self.property['max'], current_value)                                          
-                    self.camera.set_property(self.propertykey, current_value) 
             # ok
             if event.button == 2 :
                 self.camera.save_settings()

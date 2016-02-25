@@ -47,6 +47,7 @@ for i in range(3):
 	time.sleep(0.5)
 	GPIO.output(CAMLED,False) # Off
 	time.sleep(0.5)
+    
 GPIO.output(CAMLED,True) # Off
 time.sleep(1.5)
 GPIO.output(CAMLED,False)

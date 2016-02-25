@@ -1,9 +1,10 @@
 import pygame
 from SetPropertiesList import SetPropertiesList
 from State import State
+
 # import SetProperies
 
-from Scroller import Scroller
+from utils.Scroller import Scroller
 
 class MainState(State):
     

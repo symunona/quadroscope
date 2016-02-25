@@ -3,7 +3,7 @@ import CameraSettings
 from SetProperty import SetProperty 
 import pygame
 import utils
-from Scroller import Scroller
+from utils.Scroller import Scroller
 
 lineheight = 40
 

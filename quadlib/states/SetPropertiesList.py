@@ -32,6 +32,9 @@ class SetPropertiesList(State):
             utils.txt(surface, 60, 90 + (i*lineheight), txt, color )
             utils.txt(surface, 450, 90 + (i*lineheight), value, (0,200,200), )
         
+    def reset_to_default():
+        print 'resetting'
+        pass
     def event(self, event):
         State.event(self, event)
         self.scroller.event(event)                
@@ -39,5 +42,7 @@ class SetPropertiesList(State):
         if event.type == pygame.MOUSEBUTTONDOWN:                        
             if event.button == 2 :
                 SetProperty(self.stack, self.camera, self.scroller.get_value()) 
+            if event.button == 3 :
+                Confirm(self.stack, 'Are you sure you want to reset to default?', reset) 
                 
                     

@@ -20,6 +20,9 @@ class Scroller:
             index = int(index % len(self.elements))
             
             return self.elements[index]
+            
+    def set_value(self, value):
+        self.selected = self.elements.index(value)
     
     def event(self, event):
         if event.type == mouse.MOUSEWHEEL:

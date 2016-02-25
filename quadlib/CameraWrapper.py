@@ -6,7 +6,10 @@ class CameraWrapper:
     def __init__(self, camera):        
         self.camera = camera
         self.actual_camera_settings = utils.load_camera_settings()
-        
+        self.property_map = []
+        for p in CameraSettings.camera_settings:
+            self.property_map.insert(0,p['key']) 
+        self.apply_camera_settings()
     
     def property_live(self, key):
         return not 'live' in utils.find(CameraSettings.camera_settings, 'key', key).keys()
@@ -34,9 +37,17 @@ class CameraWrapper:
         except: 
             return '[error]'
         
+    def apply_camera_settings(self):
+        for key in self.actual_camera_settings.keys():    
+            if key in self.property_map:        
+                self.set_property(key,self.actual_camera_settings[key])
     
     def set_property(self, key, value):    
-
+        
+        if key not in self.property_map:
+            print '[warn] ', key, ' is not in property map'         
+            return
+        
         # update settings in preview        
         if self.property_live(key):
             setattr(self.camera, key, value)

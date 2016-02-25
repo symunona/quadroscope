@@ -12,7 +12,6 @@ def txt(surface,x,y, message, color = (255, 255, 255), fontsize = 28):
 
 
 def load_camera_settings():
-    print camera_settings_path
     with open(camera_settings_path) as settingsfile:
 	   return  json.load(settingsfile)
        

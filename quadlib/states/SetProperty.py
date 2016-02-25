@@ -12,13 +12,15 @@ class SetProperty(State):
     def __init__(self, stack, camera, propertykey):
         State.__init__(self, stack)
         self.camera = camera
-        self.title  =  self.propertykey = propertykey
+        self.propertykey = propertykey
+        self.title  =  propertykey
         self.property = camera.get_property( propertykey )
         self.actual_camera_settings = utils.load_camera_settings()
         self.original_value = camera.get_property_value( propertykey ) 
-                        
+                                
         if self.property['type'] == 'select':
-            self.scroller = Scroller(self.property['values'])
+            self.scroller = Scroller(self.property['values'], 
+                    self.property['values'].index(camera.get_property_value(propertykey)) )
 
     def draw(self, surface):
         if self.property['type'] == 'numeric':
@@ -59,10 +61,15 @@ class SetProperty(State):
 
             # reset to default
             if event.button == 3 :
-                if ('default' in self.property.keys()):
-                    self.camera.set_property(self.propertykey, self.property.default)
+                if ('default' in self.property.keys()):                        
+                    self.camera.set_property(self.propertykey, self.property['default'])
+                    if self.property['type'] == 'select':
+                        self.scroller.set_value(self.property['default'])
+                    
                 else:
                     self.camera.set_property(self.propertykey, self.original_value)
+                    if self.property['type'] == 'select':
+                        self.scroller.set_value(self.original_value)
             
         State.event(self, event)
                 

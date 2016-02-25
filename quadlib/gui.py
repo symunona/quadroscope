@@ -31,7 +31,7 @@ def main():
     #screenSize = (234,160)
     captureSize =   (320,240)
     #captureSize =   (160,120)
-    fpslimit    =   15
+    fpslimit    =   0
     screenSize  =   (pygame.display.Info().current_w,pygame.display.Info().current_h)
     # screenSize  = (((screenSize[0] + 31) // 32) * 32,((screenSize[1] + 15) // 16) * 16,)
     mode  = 'overview'
@@ -47,7 +47,7 @@ def main():
     camera.start_preview()
     
     state_stack = []    
-    MainState.MainState(state_stack, CameraWrapper(camera))
+    main_state = MainState.MainState(state_stack, CameraWrapper(camera))
     
     #screen = pygame.display.set_mode(screenSize,0)
     camera.start_preview()
@@ -66,13 +66,29 @@ def main():
     
     while True:
         
+        for event in pygame.event.get():             
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+                cam.stop()
+                pygame.quit()
+                sys.exit()
+            
+            state_stack[0].event(event)
+        
+        if overlay_renderer != None:
+            if (main_state.scroller.get_value() == 'clean'):                
+                overlay_renderer.alpha = 0
+                continue
+            else:                
+                    overlay_renderer.alpha = 64
+        
+            
         surface_top = pygame.Surface(overlaySize, 0, 24)
         # pygame.draw.rect(surface_top, (32,32,32), (0,0,overlaySize[0], overlaySize[1] ))
-        
+               
         fps(surface_top)    
-
         state_stack[0].draw(surface_top)
-       
+
+               
         if not overlay_renderer:
             overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
         else:     
@@ -80,23 +96,7 @@ def main():
                 overlay_renderer.update(surface_top.get_buffer().raw)
             except:
                 print '.'
-
-
-        
-        for event in pygame.event.get():
-            
-            # print event
-             
-            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
-                cam.stop()
-                pygame.quit()
-                sys.exit()
-            
-            state_stack[0].event(event)
-            
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     print event.button, " -- mousebutton"
-            
+    
                 
                     
 

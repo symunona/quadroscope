@@ -8,7 +8,6 @@ class State:
         self.fontobject=pygame.font.SysFont('Arial', 28)    
          
     def back(self):
-        print self.stack
         if len(self.stack) > 1 :
             self.stack.pop(0)
             

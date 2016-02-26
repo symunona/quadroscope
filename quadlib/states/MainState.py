@@ -55,7 +55,11 @@ class MainState(State):
             pygame.draw.rect(surface, (0,0,255), (10,10,30,30))
 
         if self.scroller.get_value() == 'guide':        
-            pygame.draw.rect(surface, (96,96,96), (surface.get_width()/3, surface.get_height()/3, surface.get_width()/3, surface.get_height()/3, ))
+            pygame.draw.rect(surface, (96,96,96), (
+                    utils.screen['resolution'][0]/3,
+                    utils.screen['resolution'][1]/3,
+                    utils.screen['resolution'][0]/3,
+                    utils.screen['resolution'][1]/3))
         else:
             State.draw(self, surface)
         

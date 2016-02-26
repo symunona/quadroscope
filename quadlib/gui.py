@@ -20,14 +20,14 @@ def main():
         
 
     #pygame init
-    pygame.init()
-    pygame.mouse.set_visible(False)
+    pygame.init()    
+    pygame.mouse.set_visible(False)    
     
     # screen resolution: http://www.purdyelectronics.com/pdf/AND-TFT-25PA.pdf
     #screenSize = (234,160)
     captureSize =   (320,240)
     #captureSize =   (160,120)
-    fpslimit    =   0
+    fpslimit    =   24
     # screenSize  =   (pygame.display.Info().current_w,pygame.display.Info().current_h)
     # screenSize  = (((screenSize[0] + 31) // 32) * 32,((screenSize[1] + 15) // 16) * 16,)
     screenSize = utils.screen['resolution']
@@ -92,7 +92,7 @@ def main():
                 if overlay_renderer.alpha > 0:   
                     overlay_renderer.update(surface_top.get_buffer().raw)
             except:
-                print '.'
+                pass
     
                 
                     

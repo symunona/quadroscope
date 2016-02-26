@@ -17,8 +17,8 @@ class Confirm(State):
          
     def draw(self, surface): 
         State.draw(self, surface)       
-        utils.txt(surface, (offsetx, offsety), self.scroller.get_value(), (0,255,255), 30)
-        utils.txt(surface, (offsetx, offsety+30), self.scroller.get_value(self.scroller.get_index()+1), (128,128,128), 15)
+        utils.txt_large(surface, (offsetx, offsety), self.scroller.get_value(), (0,255,255))
+        utils.txt(surface, (offsetx, offsety+30), self.scroller.get_value(self.scroller.get_index()+1), (128,128,128))
     
     def event(self, event):
         

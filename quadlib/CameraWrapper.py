@@ -17,10 +17,12 @@ class CameraWrapper:
     def get_property(self, key):
         return utils.find(CameraSettings.camera_settings, 'key', key)
         
-    def get_property_value(self, key):
+    def get_property_value(self, key):        
         property = self.get_property(key)        
         
         # if the property is comming from the camera, or not
+        if property == None:            
+            return '[warn] no such key ', key 
         if 'live' in property.keys():
             
             # if it is set in the JSON, retriev it, else return with default

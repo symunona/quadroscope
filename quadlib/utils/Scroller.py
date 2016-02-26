@@ -34,6 +34,7 @@ class Scroller:
             new_index = self.selected + event.delta
             if new_index >= len(self.elements): new_index = 0
             if new_index < 0: new_index = len(self.elements)-1
+            
             self.set_value(self.elements[new_index])
 
         # if event.type == pygame.MOUSEBUTTONDOWN:                        

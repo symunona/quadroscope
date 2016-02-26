@@ -10,10 +10,14 @@ camera_settings_path = os.path.dirname(os.path.realpath(__file__)) + '/../../con
 screen = {
     'resolution': (320, 240),
     'striperesolution': (320, 48),
-    'fontsize': 20,
+    'fontsize': 18,
     'lineheight': 24,
     'margin': 2    
 }
+
+fontobject = None
+largefontobject = None
+
 
 class Calc:
     @staticmethod
@@ -39,11 +43,27 @@ def change_to_stripe():
                 {'command': 'readd', 'screenSize': screen['striperesolution']})
     pygame.event.post(pygame_event)         
 
-def txt(surface, pos, message, color = (255, 255, 255), fontsize = screen['fontsize']):
-    message = str(message)
-    fontobject=pygame.font.SysFont('Arial', fontsize)
+def txt(surface, pos, message, color = (255, 255, 255), underline = False):
+    message = str(message)    
+    
+    if utils.fontobject == None:
+        utils.fontobject = pygame.font.SysFont('Arial', screen['fontsize'])
+    
+    utils.fontobject.set_underline(underline)
+    
     if len(message) > 0:
-        surface.blit(fontobject.render(message, 1, color), (pos[0], pos[1]))
+        surface.blit(utils.fontobject.render(message, 1, color), (pos[0], pos[1]))
+
+def txt_large(surface, pos, message, color = (255, 255, 255), underline = False):
+    message = str(message)    
+
+    if utils.largefontobject == None:
+        utils.largefontobject = pygame.font.SysFont('Arial', screen['fontsize']+2*screen['margin'])
+
+    utils.largefontobject.set_underline(underline)
+
+    if len(message) > 0:
+        surface.blit(utils.largefontobject.render(message, 1, color), (pos[0], pos[1]))
 
 
 def load_camera_settings():

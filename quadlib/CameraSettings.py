@@ -1,16 +1,5 @@
 
-
-camera_settings = [
-    
-    {
-        'key': 'saturation',
-        'min': -100,
-        'max': 100,
-        'step': 5,
-        'type': 'numeric',
-        'default': 0
-         
-    },
+camera_settings = (       
     {
         'key': 'contrast',
         'min': -100,
@@ -18,7 +7,7 @@ camera_settings = [
         'step': 5,
         'type': 'numeric',
         'default': 0         
-    },
+    },    
     {
         'key': 'brightness',
         'min': 0,
@@ -27,13 +16,14 @@ camera_settings = [
         'type': 'numeric',
         'default': 50         
     },
-    {
+     {
         'key': 'saturation',
         'min': -100,
         'max': 100,
         'step': 5,
         'type': 'numeric',
-        'default': 0         
+        'default': 0
+         
     },
     {
         'key': 'ISO',
@@ -63,16 +53,16 @@ camera_settings = [
         'default': 'off',
         'values': 'off auto night nightpreview backlight spotlight sports snow beach verylong fixedfps antishake fireworks'.split(' ')
     },
-    {
-        'key': 'awb_gain',
-        'type': 'numeric',
-        'info': 'only when awb is off',
-        'min': 0,
-        'max': 8,
-        'step': 1,
-        'default': 1
+    # {
+    #     'key': 'awb_gain',
+    #     'type': 'numeric',
+    #     'info': 'only when awb is off',
+    #     'min': 0,
+    #     'max': 8,
+    #     'step': 1,
+    #     'default': 1
         
-    },
+    # },
     {
         'key': 'awb_mode',
         'type': 'select',
@@ -125,6 +115,5 @@ camera_settings = [
         'live': False         
     }
 
-]
-
+)
 

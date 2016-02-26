@@ -25,7 +25,7 @@ camera_settings = [
         'max': 100,
         'step': 5,
         'type': 'numeric',
-        'default': 0         
+        'default': 50         
     },
     {
         'key': 'saturation',

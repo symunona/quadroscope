@@ -5,8 +5,13 @@ from utils.Scroller import Scroller
 
 from utils import mouse
 
-lineheight = 40
-offsety = 340
+lineheight = utils.screen['lineheight']
+offsety = utils.screen['lineheight']
+
+leftside = 4*utils.screen['margin']
+rightside = utils.Calc.right(50)
+centerx = utils.Calc.centerX(10)
+
 
 class SetProperty(State):
     def __init__(self, stack, camera, propertykey):
@@ -21,14 +26,20 @@ class SetProperty(State):
         if self.property['type'] == 'select':
             self.scroller = Scroller(self.property['values'], 
                     self.property['values'].index(camera.get_property_value(propertykey)) )
-
+        utils.change_to_stripe()
+        
+        
     def draw(self, surface):
         State.draw(self, surface)
         if self.property['type'] == 'numeric':
-            utils.txt(surface, 50, offsety, self.property['min'])    
-            utils.txt(surface, 490, offsety, self.property['max'])    
+            utils.txt(surface, (leftside, offsety), self.property['min'])    
+            utils.txt(surface, (rightside, offsety), self.property['max'])    
         
-        utils.txt(surface, 270, offsety, self.camera.get_property_value(self.propertykey))
+        utils.txt(surface, (centerx, offsety), self.camera.get_property_value(self.propertykey))
+    
+    def back(self):
+        utils.change_to_full_screen()
+        State.back(self)
     
     def event(self, event):
         

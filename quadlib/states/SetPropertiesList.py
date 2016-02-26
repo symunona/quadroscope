@@ -6,7 +6,10 @@ import utils
 from utils.Scroller import Scroller
 from utils.Confirm import Confirm
 
-lineheight = 40
+lineheight = utils.screen['lineheight'] + 4
+offsetx = utils.screen['margin']
+offsety = 4 * utils.screen['margin'] + utils.screen['lineheight']
+valueoffsetx = utils.screen['resolution'][0] - 120
 
 class SetPropertiesList(State):
     def __init__(self, stack, camera):
@@ -27,13 +30,13 @@ class SetPropertiesList(State):
             txt = self.scroller.get_value( self.scroller.get_index() - 3 + i )
             value = self.camera.get_property_value(txt)
             
-            fontsize = 22
+            fontsize = utils.screen['fontsize']-4
             color = (200,200,200)
             if (i == 3):
                 color = (128, 128, 255)
-                fontsize = 30
-            utils.txt(surface, 60, 90 + (i*lineheight), txt, color, fontsize)
-            utils.txt(surface, 450, 90 + (i*lineheight), value, (0,200,200), fontsize )
+                fontsize = utils.screen['fontsize']
+            utils.txt(surface, (offsetx, offsety + (i*lineheight)), txt, color)
+            utils.txt(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200), fontsize )
         
     def reset_to_default(self):
         print 'resetting'
@@ -47,6 +50,6 @@ class SetPropertiesList(State):
             if event.button == 2 :
                 SetProperty(self.stack, self.camera, self.scroller.get_value()) 
             if event.button == 3 :
-                Confirm(self.stack, 'Are you sure you want to reset to default?', self.reset_to_default) 
+                Confirm(self.stack, 'Sure reset to default?', self.reset_to_default) 
                 
                     

@@ -1,19 +1,18 @@
 import pygame
+import utils
 
 class State:  
     title = 'dummy'  
     def __init__(self, stack):       
         self.stack = stack         
-        stack.insert(0, self)
-        self.fontobject=pygame.font.SysFont('Arial', 28)    
+        stack.insert(0, self)            
          
     def back(self):
         if len(self.stack) > 1 :
             self.stack.pop(0)
             
     def draw(self, surface): 
-        if len(self.title) > 0:                         
-            surface.blit(self.fontobject.render(self.title, 1, (255,255,0) ) , (40, 10))        
+        utils.txt(surface, (utils.screen['margin'], utils.screen['margin']), self.title, (255,255,0),  )
 
     def event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:                        

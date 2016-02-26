@@ -9,18 +9,14 @@ from utils import mouse
 import utils
 
 
+
 #from PIL import Image, ImageDraw, ImageFont
 
 def main():
 
-    def txt(surface,x,y, message, color = (255, 255, 255)):
-        fontobject=pygame.font.SysFont('Arial', 28)
-        if len(message) != 0:
-            surface.blit(fontobject.render(message, 1, color), (x, y))
-
     def fps(surface):
         milliseconds = clock.tick(fpslimit)        
-        txt(surface, 600, 5, str(clock.get_fps()))
+        utils.txt(surface, (utils.screen['resolution'][0] - 30, utils.screen['margin']), str(round(clock.get_fps())))
         
 
     #pygame init
@@ -32,9 +28,10 @@ def main():
     captureSize =   (320,240)
     #captureSize =   (160,120)
     fpslimit    =   0
-    screenSize  =   (pygame.display.Info().current_w,pygame.display.Info().current_h)
+    # screenSize  =   (pygame.display.Info().current_w,pygame.display.Info().current_h)
     # screenSize  = (((screenSize[0] + 31) // 32) * 32,((screenSize[1] + 15) // 16) * 16,)
-
+    screenSize = utils.screen['resolution']
+    
     clock = time.Clock()
 
     # settin up camera
@@ -64,7 +61,6 @@ def main():
    
     while True:
         
-
         surface_top = pygame.Surface(overlaySize, 0, 24)
 
 
@@ -80,6 +76,8 @@ def main():
                     overlay_renderer.alpha = event.value
                 if event.command == 'readd':
                     camera.remove_overlay(overlay_renderer)
+                    overlaySize = event.screenSize
+                    surface_top = pygame.Surface(overlaySize, 0, 24)
                     overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
                     
         fps(surface_top)
@@ -90,8 +88,9 @@ def main():
             overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);
             
         else:     
-            try:       
-                overlay_renderer.update(surface_top.get_buffer().raw)
+            try:    
+                if overlay_renderer.alpha > 0:   
+                    overlay_renderer.update(surface_top.get_buffer().raw)
             except:
                 print '.'
     

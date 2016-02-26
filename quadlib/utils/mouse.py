@@ -13,7 +13,7 @@ def mouse_event_listener():
             for event in dev.read():
                 # The event.code for a scroll wheel event is 8, so I do the following
                 if event.code == 8:
-                    pygame_event = pygame.event.Event(MOUSEWHEEL, {'delta': event.value })
+                    pygame_event = pygame.event.Event(MOUSEWHEEL, {'delta': -event.value })
                     pygame.event.post(pygame_event)
                     # print(event.value)
         except:

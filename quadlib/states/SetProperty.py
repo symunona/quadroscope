@@ -12,7 +12,7 @@ class SetProperty(State):
     def __init__(self, stack, camera, propertykey):
         State.__init__(self, stack)
         self.camera = camera
-        self.propertykey = propertykey
+        self.propertykey = propertykey        
         self.title  =  propertykey
         self.property = camera.get_property( propertykey )
         self.actual_camera_settings = utils.load_camera_settings()
@@ -23,6 +23,7 @@ class SetProperty(State):
                     self.property['values'].index(camera.get_property_value(propertykey)) )
 
     def draw(self, surface):
+        State.draw(self, surface)
         if self.property['type'] == 'numeric':
             utils.txt(surface, 50, offsety, self.property['min'])    
             utils.txt(surface, 490, offsety, self.property['max'])    

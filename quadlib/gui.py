@@ -6,7 +6,7 @@ from pygame import time
 from CameraWrapper import CameraWrapper
 from states import MainState
 from utils import mouse
-
+import utils
 
 
 #from PIL import Image, ImageDraw, ImageFont
@@ -34,8 +34,6 @@ def main():
     fpslimit    =   0
     screenSize  =   (pygame.display.Info().current_w,pygame.display.Info().current_h)
     # screenSize  = (((screenSize[0] + 31) // 32) * 32,((screenSize[1] + 15) // 16) * 16,)
-    mode  = 'overview'
-    modes = 'overview setproperty clean guide player presets'.split(' ')
 
     clock = time.Clock()
 
@@ -63,9 +61,13 @@ def main():
     surface_top = pygame.Surface(overlaySize, 0, 24)
     surface_bottom = pygame.Surface(overlaySize, 0, 24)
     
-    
+   
     while True:
         
+
+        surface_top = pygame.Surface(overlaySize, 0, 24)
+
+
         for event in pygame.event.get():             
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                 cam.stop()
@@ -73,24 +75,20 @@ def main():
                 sys.exit()
             
             state_stack[0].event(event)
-        
-        if overlay_renderer != None:
-            if (main_state.scroller.get_value() == 'clean'):                
-                overlay_renderer.alpha = 0
-                continue
-            else:                
-                    overlay_renderer.alpha = 64
-        
+            if event.type == utils.CHANGE_DISPLAY_SETTINGS:
+                if event.command == 'alpha':
+                    overlay_renderer.alpha = event.value
+                if event.command == 'readd':
+                    camera.remove_overlay(overlay_renderer)
+                    overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
+                    
+        fps(surface_top)
             
-        surface_top = pygame.Surface(overlaySize, 0, 24)
-        # pygame.draw.rect(surface_top, (32,32,32), (0,0,overlaySize[0], overlaySize[1] ))
-               
-        fps(surface_top)    
         state_stack[0].draw(surface_top)
-
-               
+                           
         if not overlay_renderer:
-            overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
+            overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);
+            
         else:     
             try:       
                 overlay_renderer.update(surface_top.get_buffer().raw)

@@ -1,9 +1,13 @@
-from State import State
+from states.State import State
+from utils.Scroller import Scroller
+import pygame
+import utils
+
 
 offsety = 240
 offsetx = 300
 
-class SetProperty(State):
+class Confirm(State):
     def __init__(self, stack, question, success_callback):
         State.__init__(self, stack)
         
@@ -12,7 +16,8 @@ class SetProperty(State):
         self.scroller = Scroller(['no','yes'])
          
     def draw(self, surface):        
-        utils.txt(surface, offsetx, offsety, self.scroller.get_value())
+        utils.txt(surface, offsetx, offsety, self.scroller.get_value(), (0,255,255), 30)
+        utils.txt(surface, offsetx, offsety+30, self.scroller.get_value(), (128,128,128), 15)
     
     def event(self, event):
         
@@ -21,7 +26,8 @@ class SetProperty(State):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # ok
             if event.button == 2 :
-                self.success_callback()                
+                if self.scroller.get_value() == 'yes':
+                    self.success_callback()                
                 self.back()
                 return 
                 

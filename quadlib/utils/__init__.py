@@ -2,7 +2,11 @@ import pygame
 import os
 import json
 
+CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
+
 camera_settings_path = os.path.dirname(os.path.realpath(__file__)) + '/../../config/camerasettings.json'
+
+
 
 def txt(surface,x,y, message, color = (255, 255, 255), fontsize = 28):
     message = str(message)

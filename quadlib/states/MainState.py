@@ -1,20 +1,30 @@
 import pygame
 from SetPropertiesList import SetPropertiesList
 from State import State
-
-# import SetProperies
-
+import utils
 from utils.Scroller import Scroller
 
 class MainState(State):
+    
+    def on_mode_change(self, new_mode, old_mode):
+        
+        alpha = 64       
+        if (new_mode == 'clean'): alpha = 0            
+        # if (new_mode == 'player'): alpha = 255
+        
+        pygame_event = pygame.event.Event(utils.CHANGE_DISPLAY_SETTINGS, 
+                {'command': 'alpha', 'value': alpha})
+        pygame.event.post(pygame_event)     
+
     
     def __init__(self, stack, camera):
         State.__init__(self, stack)
 
         self.camera = camera
         self.title  = 'main'
-        self.modes  = 'overview setproperty clean guide player presets'.split(' ')
-        self.scroller = Scroller(self.modes, 0)        
+        self.modes  = 'clean overview setproperty guide player'.split(' ')
+        self.scroller = Scroller(self.modes, 0, self.on_mode_change)
+        self.overview = False        
         
     def event(self, event):
         State.event(self, event)
@@ -26,9 +36,24 @@ class MainState(State):
             if event.button == 2 : 
                 if self.scroller.get_value() == 'setproperty':
                     SetPropertiesList(self.stack, self.camera)
+            
+            if event.button == 1 :
+                self.scroller.set_value('overview')                 
+            
+            # see main parameters
+            if event.button == 3 : 
+                self.scroller.set_value('setproperty') 
+                SetPropertiesList(self.stack, self.camera)
+        if event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1 :                 
+                self.scroller.set_value('clean')                                
                     
         
     def draw(self, surface):
+    
+        if self.scroller.get_value() == 'overview':
+            pygame.draw.rect(surface, (0,0,255), (10,10,30,30))
+
         if self.scroller.get_value() == 'guide':        
             pygame.draw.rect(surface, (96,96,96), (surface.get_width()/3, surface.get_height()/3, surface.get_width()/3, surface.get_height()/3, ))
         else:

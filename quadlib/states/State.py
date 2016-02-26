@@ -13,7 +13,7 @@ class State:
             
     def draw(self, surface): 
         if len(self.title) > 0:                         
-            surface.blit(self.fontobject.render(self.title, 1, (0,255,0) ) , (40, 10))        
+            surface.blit(self.fontobject.render(self.title, 1, (255,255,0) ) , (40, 10))        
 
     def event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:                        

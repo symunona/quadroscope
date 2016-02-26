@@ -4,9 +4,10 @@ import mouse
 
 class Scroller:
 
-    def __init__(self, elements, index = 0):
+    def __init__(self, elements, index = 0, on_change = None):
         self.selected   = index
         self.elements = elements
+        self.on_change = on_change
 
     def get_index(self):
         return self.selected
@@ -22,13 +23,18 @@ class Scroller:
             return self.elements[index]
             
     def set_value(self, value):
+        old_value = self.elements[self.selected] 
         self.selected = self.elements.index(value)
+        if self.on_change != None:            
+            self.on_change(self.elements[self.selected], old_value) 
     
     def event(self, event):
         if event.type == mouse.MOUSEWHEEL:
-            self.selected += event.delta
-            if self.selected >= len(self.elements): self.selected = 0
-            if self.selected < 0: self.selected = len(self.elements)-1
+             
+            new_index = self.selected + event.delta
+            if new_index >= len(self.elements): new_index = 0
+            if new_index < 0: new_index = len(self.elements)-1
+            self.set_value(self.elements[new_index])
 
         # if event.type == pygame.MOUSEBUTTONDOWN:                        
         #     if event.button == 4 : self.selected -= 1

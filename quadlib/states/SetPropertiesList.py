@@ -45,7 +45,7 @@ class SetPropertiesList(State):
                 utils.txt(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200),is_first )
             
     def reset_to_default(self):
-        print 'resetting'
+        self.camera.reset_camera_settings()
         pass
         
     def event(self, event):

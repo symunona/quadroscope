@@ -38,6 +38,12 @@ class CameraWrapper:
             return actual_value 
         except: 
             return '[error]'
+
+    def reset_camera_settings(self):
+        for p in CameraSettings.camera_settings:
+            self.set_property(p['key'],p['default'])
+        
+        self.save_settings()
         
     def apply_camera_settings(self):
         for key in self.actual_camera_settings.keys():    

@@ -5,7 +5,11 @@ import utils
 
 CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
 
-camera_settings_path = os.path.dirname(os.path.realpath(__file__)) + '/../../config/camerasettings.json'
+rootpath = os.path.dirname(os.path.realpath(__file__)) + '/../../'
+
+camera_settings_path = rootpath + 'config/camerasettings.json'
+settings = json.load(open(rootpath + 'config/settings.json'))
+
 
 screen = {
     'resolution': (320, 240),

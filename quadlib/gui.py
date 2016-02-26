@@ -60,7 +60,7 @@ def main():
     
    
     while True:
-        
+        ú
         surface_top = pygame.Surface(overlaySize, 0, 24)
 
 
@@ -77,7 +77,7 @@ def main():
                 if event.command == 'readd':
                     camera.remove_overlay(overlay_renderer)
                     overlaySize = event.screenSize
-                    surface_top = pygame.Surface(overlaySize, 0, 24)
+                    surface_top = pygame.Surface(overlaySize, 0, 24)                    
                     overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
                     
         fps(surface_top)
@@ -85,11 +85,10 @@ def main():
         state_stack[0].draw(surface_top)
                            
         if not overlay_renderer:
-            overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);
-            
+            overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);            
         else:     
             try:    
-                if overlay_renderer.alpha > 0:   
+                if overlay_renderer.alpha > 0:                       
                     overlay_renderer.update(surface_top.get_buffer().raw)
             except:
                 pass

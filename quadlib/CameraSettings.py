@@ -67,7 +67,7 @@ camera_settings = (
         'key': 'awb_mode',
         'type': 'select',
         'values': 'off auto sunlight cloudy shade tungsten fluorescent incandescent flash horizon'.split(' '),
-        'default': 'off'
+        'default': 'auto'
     },
     {
         'key': 'image_effect',

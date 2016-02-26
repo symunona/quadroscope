@@ -1,6 +1,8 @@
 import pygame
 from SetPropertiesList import SetPropertiesList
 from State import State
+from Player import Player
+
 import utils
 from utils.Scroller import Scroller
 
@@ -36,6 +38,8 @@ class MainState(State):
             if event.button == 2 : 
                 if self.scroller.get_value() == 'setproperty':
                     SetPropertiesList(self.stack, self.camera)
+                if self.scroller.get_value() == 'player':
+                    Player(self.stack)
             
             if event.button == 1 :
                 self.scroller.set_value('overview')                 

@@ -46,6 +46,8 @@ def main():
     
     #screen = pygame.display.set_mode(screenSize,0)
     camera.start_preview()
+    camera.start_preview()
+    
     overlay_renderer = None
     overlay_renderer2 = None
     
@@ -60,7 +62,7 @@ def main():
     
    
     while True:
-        ú
+        
         surface_top = pygame.Surface(overlaySize, 0, 24)
 
 

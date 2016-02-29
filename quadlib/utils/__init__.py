@@ -10,7 +10,6 @@ rootpath = os.path.dirname(os.path.realpath(__file__)) + '/../../'
 camera_settings_path = rootpath + 'config/camerasettings.json'
 settings = json.load(open(rootpath + 'config/settings.json'))
 
-
 screen = {
     'resolution': (320, 240),
     'striperesolution': (320, 48),
@@ -91,4 +90,6 @@ def limit(min, max, value):
         if (value > max):
             return max
     return value
+    
+    
     

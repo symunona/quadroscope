@@ -1,5 +1,6 @@
 import CameraSettings
 import utils
+import datetime
 
 class CameraWrapper:
     
@@ -64,3 +65,11 @@ class CameraWrapper:
             
     def save_settings(self):
         utils.save_camera_settings(self.actual_camera_settings)
+        
+    def take_picture(self, filename):
+        GPIO.output(utils.gpio.CAMLED,True)
+        self.camera.capture(filename)
+        GPIO.output(utils.gpio.CAMLED,False)
+        
+    def generate_file_id(self):
+        return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

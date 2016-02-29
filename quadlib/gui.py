@@ -12,7 +12,7 @@ import utils
 
 #from PIL import Image, ImageDraw, ImageFont
 
-def main():
+def main(camera_wrapper = None):
 
     def fps(surface):
         milliseconds = clock.tick(fpslimit)        
@@ -42,7 +42,9 @@ def main():
     camera.start_preview()
     
     state_stack = []    
-    main_state = MainState.MainState(state_stack, CameraWrapper(camera))
+    if camera_wrapper == None: 
+        camera_wrapper = CameraWrapper(camera)
+    main_state = MainState.MainState(state_stack, camera_wrapper)
     
     #screen = pygame.display.set_mode(screenSize,0)
     camera.start_preview()

@@ -1,6 +1,5 @@
 import sys
 import pygame
-import picamera
 
 from pygame import time
 from CameraWrapper import CameraWrapper
@@ -12,13 +11,13 @@ import utils
 
 #from PIL import Image, ImageDraw, ImageFont
 
-def main(camera_wrapper = None):
+def main(settings = None, boss = True, updater = None, camera_wrapper = None):
 
     def fps(surface):
         milliseconds = clock.tick(fpslimit)        
         utils.txt(surface, (utils.screen['resolution'][0] - 30, utils.screen['margin']), str(round(clock.get_fps())))
         
-
+       
     #pygame init
     pygame.init()    
     pygame.mouse.set_visible(False)    
@@ -34,21 +33,22 @@ def main(camera_wrapper = None):
     
     clock = time.Clock()
 
-    # settin up camera
-    camera = picamera.PiCamera()
-    camera.resolution = captureSize
-    camera.rotation   = 180
+    if camera_wrapper == None: 
+        print '[error] no camera object'
+
+    # settin up camera   
+    camera_wrapper.camera.resolution = captureSize
+    camera_wrapper.camera.rotation   = 180
     
-    camera.start_preview()
+    camera_wrapper.camera.start_preview()
     
     state_stack = []    
-    if camera_wrapper == None: 
-        camera_wrapper = CameraWrapper(camera)
-    main_state = MainState.MainState(state_stack, camera_wrapper)
+         
+    main_state = MainState.MainState(state_stack, updater, camera_wrapper)
     
     #screen = pygame.display.set_mode(screenSize,0)
-    camera.start_preview()
-    camera.start_preview()
+    camera_wrapper.camera.start_preview()
+    #camera_wrapper.camera.start_preview()
     
     overlay_renderer = None
     overlay_renderer2 = None
@@ -79,17 +79,17 @@ def main(camera_wrapper = None):
                 if event.command == 'alpha':
                     overlay_renderer.alpha = event.value
                 if event.command == 'readd':
-                    camera.remove_overlay(overlay_renderer)
+                    camera_wrapper.camera.remove_overlay(overlay_renderer)
                     overlaySize = event.screenSize
                     surface_top = pygame.Surface(overlaySize, 0, 24)                    
-                    overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
+                    overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
                     
         fps(surface_top)
             
         state_stack[0].draw(surface_top)
                            
         if not overlay_renderer:
-            overlay_renderer = camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);            
+            overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);            
         else:     
             try:    
                 if overlay_renderer.alpha > 0:                       

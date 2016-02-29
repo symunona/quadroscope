@@ -1,16 +1,28 @@
-import datetime
+import datetime, thread
 from . import utils
-from .import CameraSettings
+from . import CameraSettings
+from .utils import gpio
+
 
 class CameraWrapper:
     
-    def __init__(self, camera):        
+    def __init__(self, camera, updater, gpio, boss, camerano):        
         self.camera = camera
         self.actual_camera_settings = utils.load_camera_settings()
         self.property_map = []
+        self.boss = boss
+        self.camerano = camerano
+        self.gpio = gpio
         for p in CameraSettings.camera_settings:
             self.property_map.insert(0,p['key']) 
         self.apply_camera_settings()
+        self.updater = updater
+        if updater != None:
+            self.fileid = self.updater.get_next_file_id()        
+            self.filename = utils.get_file_name_for_id(self.fileid, self.camerano)
+    
+    def reload_camera_settings():
+        self.actual_camera_settings = utils.load_camera_settings()
     
     def property_live(self, key):
         return not 'live' in utils.find(CameraSettings.camera_settings, 'key', key).keys()
@@ -67,9 +79,26 @@ class CameraWrapper:
         utils.save_camera_settings(self.actual_camera_settings)
         
     def take_picture(self, filename):
-        GPIO.output(utils.gpio.CAMLED,True)
+        self.gpio.camled(True)
         self.camera.capture(filename)
-        GPIO.output(utils.gpio.CAMLED,False)
-        
+        self.gpio.camled(False)
+                
     def generate_file_id(self):
         return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    def make_photos(self):
+        if self.boss and self.updater != None:
+            self.gpio.trigger_employees(True)
+                        
+        self.take_picture(self.filename)
+        
+        if self.updater != None:
+
+            self.gpio.trigger_employees(False)
+
+            if self.boss:         
+                thread.start_new_thread(self.updater.wait_for_files_from_clients, (self.fileid, self.actual_camera_settings))
+
+            self.fileid = self.updater.get_next_file_id()        
+            self.filename = utils.get_file_name_for_id(self.fileid, self.camerano)
+        

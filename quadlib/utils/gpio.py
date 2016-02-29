@@ -23,6 +23,8 @@ class Gpio:
     def initCameraLED(self):
         GPIO.setup(CAMLED, GPIO.OUT, initial=False) 
 
+    def camled(self, val):
+        GPIO.output(CAMLED, val)
 
     def blinkCamera(self, n, wait = 0.3):
         for i in range(n):
@@ -62,9 +64,8 @@ class Gpio:
         
     def init_boss(self):
     
-        GPIO.setup( self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_DOWN )
+        GPIO.setup( self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_UP )
         GPIO.setup( self.employee_trigger_port , GPIO.OUT )
         GPIO.output( self.employee_trigger_port, False )
-                
-        pass
+        
         

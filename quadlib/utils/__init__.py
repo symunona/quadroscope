@@ -1,5 +1,7 @@
 import pygame
 import os, json
+import traceback
+
 from ..updater import Updater 
 
 CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
@@ -8,6 +10,14 @@ rootpath = os.path.dirname(os.path.realpath(__file__)) + '/../../'
 
 camera_settings_path = rootpath + 'config/camerasettings.json'
 settings = json.load(open(rootpath + 'config/settings.json'))
+
+def get_file_name_for_id(id, no = None):
+    global settings
+    if no == None:
+        return settings['uploadpath'] +'img-'+ '%04d' % id +'.jpg'
+    else: 
+        return settings['uploadpath'] +'img-'+ '%04d' % id +'-'+ str(no) +'.jpg'
+
 
 screen = {
     'resolution': (320, 240),
@@ -61,6 +71,7 @@ def txt(surface, pos, message, color = (255, 255, 255), underline = False):
             print '[error] "%s"'% message, e
 
 def txt_large(surface, pos, message, color = (255, 255, 255), underline = False):
+    global largefontobject
     message = str(message)    
 
     if utils.largefontobject == None:
@@ -99,4 +110,8 @@ def limit(min, max, value):
     return value
     
     
+    
+def trace():
+    for line in traceback.format_stack():
+        print(line.strip())
     

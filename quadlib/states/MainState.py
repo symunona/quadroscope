@@ -5,6 +5,7 @@ from Player import Player
 
 from .. import utils
 from ..utils.Scroller import Scroller
+from .. import camera_loop
 
 class MainState(State):
     
@@ -19,9 +20,9 @@ class MainState(State):
         pygame.event.post(pygame_event)     
 
     
-    def __init__(self, stack, camera):
+    def __init__(self, stack, updater, camera):
         State.__init__(self, stack)
-
+        self.updater = updater
         self.camera = camera
         self.title  = 'main'
         self.modes  = 'clean overview setproperty guide player'.split(' ')
@@ -46,8 +47,8 @@ class MainState(State):
             
             # see main parameters
             if event.button == 3 : 
-                self.scroller.set_value('setproperty') 
-                SetPropertiesList(self.stack, self.camera)
+                self.camera.make_photos()
+                
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1 :                 
                 self.scroller.set_value('clean')                                

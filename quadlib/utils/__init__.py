@@ -3,6 +3,7 @@ import os
 import json
 import utils
 
+
 CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
 
 rootpath = os.path.dirname(os.path.realpath(__file__)) + '/../../'
@@ -76,6 +77,7 @@ def load_camera_settings():
 def save_camera_settings(cameraSettings):
     with open(camera_settings_path, 'w') as outfile:
         json.dump(cameraSettings, outfile)
+    
 
 def find(array, key, value):
     for o in array:

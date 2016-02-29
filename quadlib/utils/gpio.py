@@ -51,6 +51,15 @@ class GPIO:
             
         GPIO.wait_for_edge(port, GPIO.RISING)
         
+    def wait_for_release(self):
+        if self.boss:
+            port = self.boss_trigger_port
+        else: 
+            port = self.employee_trigger_port
+            
+        GPIO.wait_for_edge(port, GPIO.FALLING)
+        
+        
     def init_boss(self):
         
         GPIO.setup(self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_UPP)

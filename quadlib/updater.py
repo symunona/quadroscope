@@ -1,5 +1,7 @@
 import json, socket, os
 
+import subprocess
+
 root = os.path.dirname(__file__)
 
 def myip():
@@ -7,21 +9,50 @@ def myip():
 
 
 class Updater:
-    def __init__(self, self.settings):
-        self.self.settings = self.settings
-        self.files_to_sync = ' '.join(json.load(open(os.path.join(root, 'sync.json'))))                 
-        self.employees = json.load(open(os.path.join(root, '../config/employees.json')))
-        
-        
-    def distribute_next_file_id():
 
-    def get_next_file_id(boss):
+    def __init__(self, settings, camerano, boss):
+        self.settings = settings
+        self.camerano = camerano
+        self.boss = boss
+        self.files_to_sync = ' '.join(json.load(open(os.path.join(root, 'sync.json'))))                 
+        self.employees = json.load(open(os.path.join(root, '../config/employees.json')))        
+        
+    def send_to_all(self, cmd):
+        for emp in self.employees:
+            ip = employees[emp]['ip']
+            cmdd = 'sshpass -p "' + self.settings["sshpasswd"] + '"' + cmd + '"'
+            try:
+                subprocess.call([cmde])
+            except OSError:
+                print "[sync] error ", OSError  
+        
+    def shutdown(self):
+        self.send_to_all('sudo shutdown')
+        
+    def get_next_file_id(self, no):
+        
+        camsettings = utils.load_camera_settings()
+        id = camsettings['nextid'] 
+        camsettings['nextid'] += 1
+        utils.save_camera_settings(camsettings)
+        
+        return id
+                
+    def get_file_name_for_id(self, id, no):
+        return self.settings['uploadpath'] +'img-'+ id +'-'+ no +'.jpg'
+
+    def get_output_file_name_for_id(self, id):
+        return self.settings['uploadpath'] +'img-'+ id + '.gif'
 
     def pushToEmployee(self, no, ip):
         
         cmd = 'pkill -f camera.py'
         cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
-        os.system(cmde)
+
+        try:
+            subprocess.call([cmde])
+        except OSError:
+            print "[sync] error ", OSError 
 
         print "[sync] Updating " + str(no) + " @" + ip	
         cmd = "" 
@@ -32,13 +63,16 @@ class Updater:
             
         cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
 
-        os.system(cmde)
+        try:
+            subprocess.call([cmde])
+        except OSError:
+            print "[sync] error ", OSError 
 
         print "[sync] sending files " + self.files_to_sync		
         os.system('cd '+root+'/.. ;sshpass -p "' + self.settings["sshpasswd"] + '" scp -r '+self.files_to_sync+' '+self.settings["sshusername"] + '@'+ ip + ':' + self.settings["sshpath"])
 
 
-    def restart_employee(self):
+    def restart_employee(self, ip):
         restartscript = "sshpass -p '" + self.settings["sshpasswd"] + "' ssh "+self.settings["sshusername"] +'@'+ip+' "'
         restartscript += "python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log & "'
         os.system(restartscript)
@@ -55,6 +89,7 @@ class Updater:
                     settings["sshpath"]+'/percamcoonfig/; '
                     os.system("echo " + emp + ' > ' + self.settings["sshpath"]+'percamconfig/camerano ')
         
+              
                         
     def sync_camera_settings(self):
         
@@ -64,6 +99,23 @@ class Updater:
             os.system(cmd)
         return 
 
-    def uploadPhoto(file, ip, self.settings):
-        os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+file+' '+self.settings["sshusername"] + '@'+ ip + ':' + '/' + self.settings["uploadpath"])
+    def upload_photos(self, ip, file):
+        os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ self.settings["uploadpath"] + file+ ' '+self.settings["sshusername"] + '@'+ ip + ':' + '/' + self.settings["uploadpath"] )
+
+
+    def download_photos(self, ip, file, target):
+        os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+self.settings["sshusername"] + '@'+ ip + ':' + '/' + self.settings["uploadpath"] + file + ' /' + self.settings["uploadpath"] + target )
+
+    def download_files_from_clients(files):
+        
+        for emp in self.employees.keys():
+            self.download_photos(self.employees[emp]['ip'])
+        
+        try:
+            subprocess.call([cmde])
+        except OSError:
+            print "[sync] error ", OSError 
+
+    # def upload_photo(self, file, ip):
+    #     os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+file+' '+self.settings["sshusername"] + '@'+ ip + ':' + '/' + self.settings["uploadpath"])
         

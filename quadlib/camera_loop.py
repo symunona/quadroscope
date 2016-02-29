@@ -1,17 +1,18 @@
 import convert
 import time
-def make_photos(fileid):
+
+def make_photos(updater, fileid, filename):
 
     # if boss, then upload settings to other cameras
     if isBoss:
         triggerEmployees( True )
-        
-    filename = camera.take_picture(fileid)
+            
+    camera.take_picture(filename)
             
     if isBoss:
         triggerEmployees(False)
         print "[listener] i is the boss, creating gif..."
-        thread.start_new_thread( convert.download_files_from_clients, (fileid, settings, camera_settings, ))		
+        thread.start_new_thread( convert.download_files_from_clients, (updater, fileid, settings, camera_settings, ))		
     
     # mode 1: it downloads the files 
     # if not isBoss:
@@ -27,24 +28,26 @@ def camera_loop(updater, gpio, camera):
 
         fileid = updater.get_next_file_id()
         
-        gpio.wait_for_trigger() # ____/‾‾‾‾
+        filename = updater.get_file_name_for_id(fileid)
+        
+        gpio.wait_for_trigger()                     # ____/
     
-        make_photos(fileid)     # break break
+        make_photos(updater, fileid, filename)       # break break
         
-        gpio.wait_for_release() # ‾‾‾‾\____
+        gpio.wait_for_release()                     #     \____
         
         
 
 
-def download_files_from_clients(id ):
-	print "[convert] waiting for files of " + id
-	
+def download_files_from_clients( updater, id ):
+    print "[convert] waiting for files of " + id
+
     #lol, good enough for the demo...
-	time.sleep(6)
-    
+    time.sleep(6)
+
     updater.download_files_from_clients(id)
-    
-	createGif(id)
+
+    createGif(id)
 
 def createGif(id, employees, settings, camerasettings):	
 	cmd = 'convert -delay '+str(camerasettings['delay'])+' -size 640x480 -loop 0 '

@@ -1,7 +1,7 @@
-from states.State import State
-from utils.Scroller import Scroller
 import pygame
-import utils
+from .. import utils
+from ..states.State import State
+from ..utils.Scroller import Scroller
 
 
 offsety = utils.Calc.centerY(utils.screen['fontsize'])

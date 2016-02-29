@@ -1,6 +1,6 @@
-import json, socket, os
+import utils
 
-import subprocess
+import json, socket, os, subprocess
 
 root = os.path.dirname(__file__)
 
@@ -10,12 +10,16 @@ def myip():
 
 class Updater:
 
+    instance = None
+
     def __init__(self, settings, camerano, boss):
+        self.instance = self
         self.settings = settings
         self.camerano = camerano
         self.boss = boss
         self.files_to_sync = ' '.join(json.load(open(os.path.join(root, 'sync.json'))))                 
-        self.employees = json.load(open(os.path.join(root, '../config/employees.json')))        
+        self.employees = json.load(open(os.path.join(root, '../config/employees.json')))          
+        self.push()
         
     def send_to_all(self, cmd):
         for emp in self.employees:
@@ -24,25 +28,29 @@ class Updater:
             try:
                 subprocess.call([cmde])
             except OSError:
-                print "[sync] error ", OSError  
+                print "[sync] error running '%s' " % cmde, OSError 
         
     def shutdown(self):
         self.send_to_all('sudo shutdown')
         
-    def get_next_file_id(self, no):
+    def get_next_file_id(self):
         
         camsettings = utils.load_camera_settings()
         id = camsettings['nextid'] 
-        camsettings['nextid'] += 1
+        print '[img id ]', id
+        camsettings['nextid'] = int(camsettings['nextid']) + 1
         utils.save_camera_settings(camsettings)
         
         return id
                 
-    def get_file_name_for_id(self, id, no):
-        return self.settings['uploadpath'] +'img-'+ id +'-'+ no +'.jpg'
+    def get_file_name_for_id(self, id, no = None):
+        if no == None:
+            return self.settings['uploadpath'] +'img-'+ '%04d' % id +'.jpg'
+        else: 
+            return self.settings['uploadpath'] +'img-'+ '%04d' % id +'-'+ no +'.jpg'
 
     def get_output_file_name_for_id(self, id):
-        return self.settings['uploadpath'] +'img-'+ id + '.gif'
+        return self.settings['uploadpath'] +'img-'+ '%04d' % id + '.gif'
 
     def pushToEmployee(self, no, ip):
         
@@ -52,7 +60,7 @@ class Updater:
         try:
             subprocess.call([cmde])
         except OSError:
-            print "[sync] error ", OSError 
+            print "[sync] error running '%s' " % cmde, OSError.message
 
         print "[sync] Updating " + str(no) + " @" + ip	
         cmd = "" 
@@ -66,7 +74,7 @@ class Updater:
         try:
             subprocess.call([cmde])
         except OSError:
-            print "[sync] error ", OSError 
+            print "[sync] error running '%s' " % cmde, OSError.message
 
         print "[sync] sending files " + self.files_to_sync		
         os.system('cd '+root+'/.. ;sshpass -p "' + self.settings["sshpasswd"] + '" scp -r '+self.files_to_sync+' '+self.settings["sshusername"] + '@'+ ip + ':' + self.settings["sshpath"])
@@ -79,15 +87,15 @@ class Updater:
 
     def push(self):
         print "[sync] sending files to the other PIs"
-            for emp in self.employees.keys(): 
-                ip = self.employees[emp]['ip']
-                
-                if myip() != ip:
-                    self.pushToEmployee(emp, ip)
-                else:
-                    print "[sync] That's me: " + ip
-                    settings["sshpath"]+'/percamcoonfig/; '
-                    os.system("echo " + emp + ' > ' + self.settings["sshpath"]+'percamconfig/camerano ')
+        for emp in self.employees.keys(): 
+            ip = self.employees[emp]['ip']
+            
+            if myip() != ip:
+                self.pushToEmployee(emp, ip)
+            else:
+                print "[sync] That's me: " + ip
+                settings["sshpath"]+'/percamcoonfig/; '
+                os.system("echo " + emp + ' > ' + self.settings["sshpath"]+'percamconfig/camerano ')
         
               
                         

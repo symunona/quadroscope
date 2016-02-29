@@ -1,9 +1,9 @@
 import pygame
-import utils
-from utils import dir 
-from utils.Scroller import Scroller
+from .. import utils
+from ..utils import dir 
+from ..utils.Scroller import Scroller
 from State import State
-from utils.GIFImage import GIFImage
+from ..utils.GIFImage import GIFImage
 
 
 lineheight = 40

@@ -1,6 +1,6 @@
-import CameraSettings
-import utils
 import datetime
+from . import utils
+from .import CameraSettings
 
 class CameraWrapper:
     

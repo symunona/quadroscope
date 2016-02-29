@@ -1,10 +1,12 @@
-from State import State
-import CameraSettings
-from SetProperty import SetProperty 
 import pygame
-import utils
-from utils.Scroller import Scroller
-from utils.Confirm import Confirm
+
+from State import State
+from SetProperty import SetProperty 
+
+from .. import utils
+from .. import CameraSettings
+from ..utils.Scroller import Scroller
+from ..utils.Confirm import Confirm
 
 lineheight = utils.screen['lineheight'] + 4
 offsetx = utils.screen['margin']

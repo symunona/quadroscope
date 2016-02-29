@@ -3,8 +3,8 @@ from SetPropertiesList import SetPropertiesList
 from State import State
 from Player import Player
 
-import utils
-from utils.Scroller import Scroller
+from .. import utils
+from ..utils.Scroller import Scroller
 
 class MainState(State):
     

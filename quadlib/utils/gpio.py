@@ -3,7 +3,7 @@ import time
 
 CAMLED = 32
 
-class GPIO:
+class Gpio:
     def __init__(self, settings, boss):
         self.settings = settings
         self.boss = boss
@@ -35,12 +35,11 @@ class GPIO:
         time.sleep(wait * 3)
         GPIO.output(CAMLED,False)
         
-    def init_employee(self):
-        
+    def init_employee(self):    
+        GPIO.setup( employee_trigger_port , GPIO.IN )
         
     def trigger_employees(self,  val ):
-
-        GPIO.setup( employee_trigger_port , GPIO.IN )
+        GPIO.output( self.employee_trigger_port, val )
 
 
     def wait_for_trigger(self):
@@ -48,8 +47,9 @@ class GPIO:
             port = self.boss_trigger_port
         else: 
             port = self.employee_trigger_port
-            
+        print '[main_loop] waiting for trigger on ', str(port)
         GPIO.wait_for_edge(port, GPIO.RISING)
+        print '[main_loop] TRIGGERED ', str(port)
         
     def wait_for_release(self):
         if self.boss:
@@ -61,12 +61,10 @@ class GPIO:
         
         
     def init_boss(self):
+    
+        GPIO.setup( self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_DOWN )
+        GPIO.setup( self.employee_trigger_port , GPIO.OUT )
+        GPIO.output( self.employee_trigger_port, False )
+                
+        pass
         
-        GPIO.setup(self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_UPP)
-        GPIO.setup( self.employee_trigger_port , GPIO.OUT )		
-	    GPIO.output( self.employee_trigger_port, False )
-         
-        
-        	# for i in employees:
-	# 	GPIO.setup( employees[i]['gpio'] , GPIO.OUT )
-	#         GPIO.output( triggerport, False )		

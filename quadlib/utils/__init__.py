@@ -1,8 +1,6 @@
 import pygame
-import os
-import json
-import utils
-
+import os, json
+from ..updater import Updater 
 
 CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
 
@@ -48,15 +46,19 @@ def change_to_stripe():
     pygame.event.post(pygame_event)         
 
 def txt(surface, pos, message, color = (255, 255, 255), underline = False):
-    message = str(message)    
+    global fontobject
     
-    if utils.fontobject == None:
-        utils.fontobject = pygame.font.SysFont('Arial', screen['fontsize'])
+    message = str(message)        
+    if fontobject == None:
+        fontobject = pygame.font.SysFont('Arial', screen['fontsize'])
     
-    utils.fontobject.set_underline(underline)
+    fontobject.set_underline(underline)
     
     if len(message) > 0:
-        surface.blit(utils.fontobject.render(message, 1, color), (pos[0], pos[1]))
+        try:
+            surface.blit(fontobject.render(message, 1, color), (pos[0], pos[1]))
+        except Exception, e: 
+            print '[error] "%s"'% message, e
 
 def txt_large(surface, pos, message, color = (255, 255, 255), underline = False):
     message = str(message)    
@@ -74,9 +76,12 @@ def load_camera_settings():
     with open(camera_settings_path) as settingsfile:
 	   return  json.load(settingsfile)
        
-def save_camera_settings(cameraSettings):
+def save_camera_settings(cameraSettings):    
     with open(camera_settings_path, 'w') as outfile:
         json.dump(cameraSettings, outfile)
+        
+    if Updater.instance != None:
+        Updater.instance.sync_camera_settings()
     
 
 def find(array, key, value):

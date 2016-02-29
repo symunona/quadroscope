@@ -1,9 +1,8 @@
-from State import State
 import pygame
-import utils
-from utils.Scroller import Scroller
-
-from utils import mouse
+from .. import utils
+from State import State
+from ..utils import mouse
+from ..utils.Scroller import Scroller
 
 lineheight = utils.screen['lineheight']
 offsety = utils.screen['lineheight']

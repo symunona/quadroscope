@@ -41,7 +41,7 @@ class Gpio:
         GPIO.setup( self.employee_trigger_port , GPIO.IN )
         
     def trigger_employees(self,  val ):
-        print '[triggering] ', str(self.employee_trigger_port), str(val)
+        # print '[triggering] ', str(self.employee_trigger_port), str(val)
         GPIO.output( self.employee_trigger_port, val )
 
 
@@ -50,7 +50,7 @@ class Gpio:
             port = self.boss_trigger_port
         else: 
             port = self.employee_trigger_port
-        print '[main_loop] waiting for trigger on ', str(port)
+        # print '[main_loop] waiting for trigger on ', str(port)
         GPIO.wait_for_edge(port, GPIO.RISING)
         print '[main_loop] TRIGGERED ', str(port)
         

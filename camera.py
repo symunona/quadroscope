@@ -15,6 +15,8 @@ print '[__file__] ', __file__
 
 settings = json.load(open(root+'config/settings.json'))
 boss = os.path.isfile(root+'percamconfig/boss')
+vflip = os.path.isfile(root+'percamconfig/vflip')
+hflip = os.path.isfile(root+'percamconfig/hflip')
 camerano = open(root+'percamconfig/camerano', 'r').read().strip('\n')
         
 debug = False
@@ -41,7 +43,13 @@ print "[root] Camera number(change it in camerano file): " + str(camerano)
 
 gpio = Gpio(settings, boss)
 
-camera = CameraWrapper(picamera.PiCamera(), updater, gpio, boss, camerano)
+picam_object = picamera.PiCamera()
+picam_object.hflip = False
+
+picam_object.vflip = vflip
+picam_object.hflip = hflip
+
+camera = CameraWrapper(picam_object, updater, gpio, boss, camerano)
 
 # show user that we are starting
 gpio.blinkCamera(4)

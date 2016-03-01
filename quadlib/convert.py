@@ -5,7 +5,7 @@ import utils
 def create_gif(id, employees, settings, camerasettings):	
 
 
-    cmd = 'convert -delay '+str(camerasettings['delay'])+' -size'
+    cmd = 'convert -delay '+str(camerasettings['delay'])+' -size '
     cmd += camerasettings['resolution'] + ' -loop 0 '
     foundpics = 0
     pictureCnt = len(employees.keys())
@@ -15,15 +15,17 @@ def create_gif(id, employees, settings, camerasettings):
             foundpics += 1;
             cmd += filename +' '
             
-        for i in range(pictureCnt-2):
-            filename = utils.get_file_name_for_id(id, pictureCnt-i-1)            
+        for i in range(foundpics-2):
+            filename = utils.get_file_name_for_id(id, foundpics-i-1)            
             if os.path.exists(filename):
                     cmd += filename +' '
 
-    cmd += settings['outputpath'] + '%04d' % id + '640.gif'
+    cmd += settings['outputpath'] + '%04d' % id + '-'+camerasettings['resolution']+'.gif'
     if foundpics > 1:
+        starttime = time.time()
+        print '[convert] start ', str(id), cmd
         os.system(cmd)
-        print '[convert] ' + cmd
+        print '[convert] ended ', str(id), ' time: ', str((time.time() - starttime)) 
     else:
         # utils.trace()
         print '[convert] Only one pic!'

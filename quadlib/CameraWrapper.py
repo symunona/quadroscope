@@ -21,7 +21,7 @@ class CameraWrapper:
             self.fileid = self.updater.get_next_file_id()        
             self.filename = utils.get_file_name_for_id(self.fileid, self.camerano)
     
-    def reload_camera_settings():
+    def reload_camera_settings(self):
         self.actual_camera_settings = utils.load_camera_settings()
     
     def property_live(self, key):
@@ -83,6 +83,7 @@ class CameraWrapper:
                 
         res = self.actual_camera_settings['resolution'].split('x')        
         self.camera.resolution = (int(res[0]), int(res[1])) 
+        
         self.camera.capture(filename)
         self.camera.resolution = utils.screen['captureresolution']        
         self.gpio.camled(False)
@@ -91,6 +92,10 @@ class CameraWrapper:
         return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     def make_photos(self):
+
+        self.fileid = self.updater.get_next_file_id()        
+        self.filename = utils.get_file_name_for_id(self.fileid, self.camerano)
+
         if self.boss and self.updater != None:
             self.gpio.trigger_employees(True)
                         
@@ -98,11 +103,8 @@ class CameraWrapper:
         
         if self.updater != None:
 
-            self.gpio.trigger_employees(False)
-
             if self.boss:         
+                self.gpio.trigger_employees(False)
                 thread.start_new_thread(self.updater.wait_for_files_from_clients, (self.fileid, self.actual_camera_settings))
 
-            self.fileid = self.updater.get_next_file_id()        
-            self.filename = utils.get_file_name_for_id(self.fileid, self.camerano)
-        
+        self.updater.step_file_id()

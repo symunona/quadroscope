@@ -2,6 +2,7 @@ import pygame
 from SetPropertiesList import SetPropertiesList
 from State import State
 from Player import Player
+from Power import Power
 
 from .. import utils
 from ..utils.Scroller import Scroller
@@ -27,7 +28,7 @@ class MainState(State):
         self.updater = updater
         self.camera = camera
         self.title  = 'main'
-        self.modes  = 'clean overview setproperty guide player'.split(' ')
+        self.modes  = 'clean overview setproperty guide player power'.split(' ')
         self.scroller = Scroller(self.modes, 0, self.on_mode_change)
         self.overview = False        
         
@@ -43,6 +44,8 @@ class MainState(State):
                     SetPropertiesList(self.stack, self.camera)
                 if self.scroller.get_value() == 'player':
                     Player(self.stack)
+                if self.scroller.get_value() == 'power':
+                    Power(self.stack, self.updater)
             
             if event.button == 1 :
                 self.scroller.set_value('overview')                 

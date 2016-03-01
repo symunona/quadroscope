@@ -19,14 +19,15 @@ def make_photos(updater, fileid, filename, camera):
 def camera_loop(updater, gpio, camera):
     
     while True:
-
+    
         fileid = updater.get_next_file_id()        
         filename = utils.get_file_name_for_id(fileid)
-        
+    
+        print '[waiting for image] ', fileid    
         gpio.wait_for_trigger()                     # ____/
             
         camera.reload_camera_settings()
-        camera.make_photos(updater, fileid, filename)       # break break
+        camera.make_photos()       # break break
         
         gpio.wait_for_release()                     #     \____
         

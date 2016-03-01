@@ -30,7 +30,7 @@ class Updater:
     instance = None
 
     def __init__(self, camerano, boss, debug = False):
-        global settings
+        global settings        
         self.instance = self
         self.settings = utils.settings    
         settings = utils.settings    
@@ -49,6 +49,7 @@ class Updater:
                 self.push()
             else:
                 self.restart_employees()
+                self.sync_camera_settings()
         
     def send_to_one(self, cmd, ip):
 
@@ -68,22 +69,29 @@ class Updater:
         
     def shutdown(self):
         self.send_to_all('sudo shutdown')
+
+    def reboot(self):
+        self.send_to_all('sudo reboot')
+
+    def step_file_id(self):
+        camsettings = utils.load_camera_settings()
+        id = camsettings['nextid'] 
+        print '[stepping]', id
+        camsettings['nextid'] = int(camsettings['nextid']) + 1
+        utils.save_camera_settings(camsettings)
+        
         
     def get_next_file_id(self):
         
         camsettings = utils.load_camera_settings()
         id = camsettings['nextid'] 
-        print '[img id ]', id
-        camsettings['nextid'] = int(camsettings['nextid']) + 1
-        utils.save_camera_settings(camsettings)
-        
+        print '[img id ]', id        
         return id
                 
 
     def get_output_file_name_for_id(self, id):
         return self.settings['uploadpath'] +'img-'+ '%04d' % id + '.gif'
 
-        
 
     def pushToEmployeeold(self, no, ip):
         
@@ -110,10 +118,10 @@ class Updater:
         except OSError, e:
             print "[sync] error running '%s' " % cmde, e
                 
-        print "[sync] sending files " + self.files_to_sync
+        # print "[sync] sending files " + self.files_to_sync
         
         upload_cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp -r '+self.files_to_sync+' '+self.settings["sshusername"] + '@'+ ip + ':' + self.settings["sshpath"]		
-        print upload_cmd
+        # print upload_cmd
         os.system(upload_cmd)
 
         
@@ -122,7 +130,8 @@ class Updater:
         cmd = 'pkill -f camera.py'
         cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
         
-        print '[sync] res: ', subprocess_cmd(cmde)
+        res = subprocess_cmd(cmde)
+        # print '[sync] res: ', res 
                 
         print "[sync] Updating " + str(no) + " @" + ip	
         cmd = "" 
@@ -136,15 +145,17 @@ class Updater:
         print '[sync] res: ', subprocess_cmd(cmde)
         
                 
-        print "[sync] sending files " + self.files_to_sync
+        # print "[sync] sending files " + self.files_to_sync
         
         upload_cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp -r '+self.files_to_sync+' '+self.settings["sshusername"] + '@'+ ip + ':' + self.settings["sshpath"]		
-        print upload_cmd
-        print '[sync] res: ', subprocess_cmd(upload_cmd)
+        # print upload_cmd
+        # print '[sync] res: ', 
+        subprocess_cmd(upload_cmd)
         
         self.restart_employee(ip)
 
     def restart_employees(self):
+        self.send_to_all("python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &')
         self.send_to_all("python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &')
 
     def restart_employee(self, ip):
@@ -171,8 +182,9 @@ class Updater:
         
         for emp in self.employees:
             ip = employees[emp]['ip']
-            cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ root + '/../config/cameraself.settings.json ' + self.settings["sshusername"] +'@'+ip+':'+self.settings["sshpath"]+'config'
-            os.system(cmd)
+            cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ root + '/../config/camerasettings.json ' + self.settings["sshusername"] +'@'+ip+':'+self.settings["sshpath"]+'config'
+            print '[sync] updating camera ', str(emp)
+            subprocess_cmd(cmd)
         return 
 
     def upload_photos(self, ip, file):
@@ -180,7 +192,7 @@ class Updater:
 
 
     def download_photos(self, ip, file, target):
-        os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+self.settings["sshusername"] + '@'+ ip + ':' + '/' + self.settings["uploadpath"] + file + ' /' + self.settings["uploadpath"] + target )
+        os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+self.settings["sshusername"] + '@'+ ip + ':' + file + ' /'+ target )
 
 
     def download_files_from_clients(self, id):

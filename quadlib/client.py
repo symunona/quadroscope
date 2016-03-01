@@ -1,5 +1,4 @@
-
-
+import utils
 import convert
 import time
 
@@ -22,7 +21,7 @@ def camera_loop(updater, gpio, camera):
     while True:
 
         fileid = updater.get_next_file_id()        
-        filename = updater.get_file_name_for_id(fileid)
+        filename = utils.get_file_name_for_id(fileid)
         
         gpio.wait_for_trigger()                     # ____/
             

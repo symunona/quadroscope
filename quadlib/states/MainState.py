@@ -6,6 +6,8 @@ from Player import Player
 from .. import utils
 from ..utils.Scroller import Scroller
 from .. import camera_loop
+from ..utils import pygame_utils
+
 
 class MainState(State):
     
@@ -15,7 +17,7 @@ class MainState(State):
         if (new_mode == 'clean'): alpha = 0            
         # if (new_mode == 'player'): alpha = 255
         
-        pygame_event = pygame.event.Event(utils.CHANGE_DISPLAY_SETTINGS, 
+        pygame_event = pygame.event.Event(pygame_utils.CHANGE_DISPLAY_SETTINGS, 
                 {'command': 'alpha', 'value': alpha})
         pygame.event.post(pygame_event)     
 

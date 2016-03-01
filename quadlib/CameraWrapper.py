@@ -80,7 +80,11 @@ class CameraWrapper:
         
     def take_picture(self, filename):
         self.gpio.camled(True)
+                
+        res = self.actual_camera_settings['resolution'].split('x')        
+        self.camera.resolution = (int(res[0]), int(res[1])) 
         self.camera.capture(filename)
+        self.camera.resolution = utils.screen['captureresolution']        
         self.gpio.camled(False)
                 
     def generate_file_id(self):

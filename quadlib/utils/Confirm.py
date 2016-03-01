@@ -2,10 +2,10 @@ import pygame
 from .. import utils
 from ..states.State import State
 from ..utils.Scroller import Scroller
+from ..utils import pygame_utils
 
-
-offsety = utils.Calc.centerY(utils.screen['fontsize'])
-offsetx = utils.Calc.centerX(10)
+offsety = pygame_utils.Calc.centerY(utils.screen['fontsize'])
+offsetx = pygame_utils.Calc.centerX(10)
 
 class Confirm(State):
     def __init__(self, stack, question, success_callback):
@@ -17,8 +17,8 @@ class Confirm(State):
          
     def draw(self, surface): 
         State.draw(self, surface)       
-        utils.txt_large(surface, (offsetx, offsety), self.scroller.get_value(), (0,255,255))
-        utils.txt(surface, (offsetx, offsety+30), self.scroller.get_value(self.scroller.get_index()+1), (128,128,128))
+        pygame_utils.txt_large(surface, (offsetx, offsety), self.scroller.get_value(), (0,255,255))
+        pygame_utils.txt(surface, (offsetx, offsety+30), self.scroller.get_value(self.scroller.get_index()+1), (128,128,128))
     
     def event(self, event):
         

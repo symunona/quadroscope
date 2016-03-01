@@ -4,6 +4,7 @@ from ..utils import dir
 from ..utils.Scroller import Scroller
 from State import State
 from ..utils.GIFImage import GIFImage
+from ..utils import pygame_utils
 
 
 lineheight = 40
@@ -26,7 +27,7 @@ class Player(State):
         
         self.load_image(self.filename)
         
-        pygame_event = pygame.event.Event(utils.CHANGE_DISPLAY_SETTINGS, {'command': 'alpha', 'value': 255})
+        pygame_event = pygame.event.Event(pygame_utils.CHANGE_DISPLAY_SETTINGS, {'command': 'alpha', 'value': 255})
         pygame.event.post(pygame_event)     
         
     def load_image(self, image, last = None):
@@ -51,7 +52,7 @@ class Player(State):
         
     
     def back(self):
-        pygame_event = pygame.event.Event(utils.CHANGE_DISPLAY_SETTINGS, {'command': 'alpha', 'value': 64})
+        pygame_event = pygame.event.Event(pygame_utils.CHANGE_DISPLAY_SETTINGS, {'command': 'alpha', 'value': 64})
         pygame.event.post(pygame_event)     
         State.back(self)    
             

@@ -4,9 +4,9 @@ import pygame
 from pygame import time
 from CameraWrapper import CameraWrapper
 from states import MainState
-from utils import mouse
 import utils
-
+from utils import mouse
+from utils import pygame_utils
 
 
 #from PIL import Image, ImageDraw, ImageFont
@@ -15,7 +15,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
 
     def fps(surface):
         milliseconds = clock.tick(fpslimit)        
-        utils.txt(surface, (utils.screen['resolution'][0] - 30, utils.screen['margin']), str(round(clock.get_fps())))
+        pygame_utils.txt(surface, (utils.screen['resolution'][0] - 30, utils.screen['margin']), str(round(clock.get_fps())))
         
        
     #pygame init
@@ -75,7 +75,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
                 sys.exit()
             
             state_stack[0].event(event)
-            if event.type == utils.CHANGE_DISPLAY_SETTINGS:
+            if event.type == pygame_utils.CHANGE_DISPLAY_SETTINGS:
                 if event.command == 'alpha':
                     overlay_renderer.alpha = event.value
                 if event.command == 'readd':

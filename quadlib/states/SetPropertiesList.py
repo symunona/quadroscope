@@ -4,6 +4,7 @@ from State import State
 from SetProperty import SetProperty 
 
 from .. import utils
+from ..utils import pygame_utils
 from .. import CameraSettings
 from ..utils.Scroller import Scroller
 from ..utils.Confirm import Confirm
@@ -39,12 +40,12 @@ class SetPropertiesList(State):
                                     
             if (i == 3):
                 color = (128, 128, 255)            
-                utils.txt_large(surface, (offsetx, offsety + (i*lineheight)), txt, color, is_first)
-                utils.txt_large(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200), is_first )
+                pygame_utils.txt_large(surface, (offsetx, offsety + (i*lineheight)), txt, color, is_first)
+                pygame_utils.txt_large(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200), is_first )
             else:
                 color = (200,200,200)
-                utils.txt(surface, (offsetx, offsety + (i*lineheight)), txt, color, is_first)
-                utils.txt(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200),is_first )
+                pygame_utils.txt(surface, (offsetx, offsety + (i*lineheight)), txt, color, is_first)
+                pygame_utils.txt(surface, (valueoffsetx, offsety + (i*lineheight)), value, (0,200,200),is_first )
             
     def reset_to_default(self):
         self.camera.reset_camera_settings()

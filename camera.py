@@ -2,7 +2,7 @@ import os, os.path, sys, json, time, thread, datetime
 import picamera
  
 
-from quadlib import convert, gui
+from quadlib import convert
 from quadlib.updater import Updater
 from quadlib.utils.gpio import Gpio
 from quadlib import client
@@ -17,10 +17,22 @@ settings = json.load(open(root+'config/settings.json'))
 boss = os.path.isfile(root+'percamconfig/boss')
 camerano = open(root+'percamconfig/camerano', 'r').read().strip('\n')
         
-updater = Updater(settings, camerano, boss)
+debug = False
+
+for arg in sys.argv: 
+    if arg == '--debug': debug = True
+    if arg == '--restartall':
+        updater = Updater(camerano, boss, False)
+        updater.restart_employees()
+        sys.exit()
+    if arg == '--update':
+        updater = Updater(camerano, boss, True)        
+        sys.exit()
+        
+updater = Updater(camerano, boss, debug)
 
 if (not boss):
-	bossip = myfile.read().strip('\n')			
+	bossip = open(root+'percamconfig/bossip', 'r').read().strip('\n')			
 else:
 	# employees = updater.push(settings)
     pass
@@ -38,6 +50,7 @@ print "[listener] listening on port " + str(gpio.port)
 
 # start camera loop
 if boss:
+    from quadlib import gui 
     gui.main(settings, boss, updater, camera)
 else:
     client.camera_loop( updater, gpio, camera )

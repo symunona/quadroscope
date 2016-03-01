@@ -1,15 +1,16 @@
 import pygame
-from .. import utils
+from .. import utils 
 from State import State
 from ..utils import mouse
+from ..utils import pygame_utils
 from ..utils.Scroller import Scroller
 
 lineheight = utils.screen['lineheight']
 offsety = utils.screen['lineheight']
 
 leftside = 4*utils.screen['margin']
-rightside = utils.Calc.right(50)
-centerx = utils.Calc.centerX(10)
+rightside = pygame_utils.Calc.right(50)
+centerx = pygame_utils.Calc.centerX(10)
 
 
 class SetProperty(State):
@@ -25,19 +26,19 @@ class SetProperty(State):
         if self.property['type'] == 'select':
             self.scroller = Scroller(self.property['values'], 
                     self.property['values'].index(camera.get_property_value(propertykey)) )
-        utils.change_to_stripe()
+        pygame_utils.change_to_stripe()
         
         
     def draw(self, surface):
         State.draw(self, surface)
         if self.property['type'] == 'numeric':
-            utils.txt(surface, (leftside, offsety), self.property['min'])    
-            utils.txt(surface, (rightside, offsety), self.property['max'])    
+            pygame_utils.txt(surface, (leftside, offsety), self.property['min'])    
+            pygame_utils.txt(surface, (rightside, offsety), self.property['max'])    
         
-        utils.txt(surface, (centerx, offsety), self.camera.get_property_value(self.propertykey))
+        pygame_utils.txt(surface, (centerx, offsety), self.camera.get_property_value(self.propertykey))
     
     def back(self):
-        utils.change_to_full_screen()
+        pygame_utils.change_to_full_screen()
         State.back(self)
     
     def event(self, event):

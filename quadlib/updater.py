@@ -46,6 +46,7 @@ class Updater:
         #update client code
         if boss:                
             if debug: 
+                print '[sync] updating clients'
                 self.push()
             else:
                 self.restart_employees()
@@ -171,8 +172,8 @@ class Updater:
             ip = self.employees[emp]['ip']
             
             if myip() != ip:
-                thread.start_new_thread( self.pushToEmployee, (emp, ip))
-                # self.pushToEmployee(emp, ip)
+                # thread.start_new_thread( self.pushToEmployee, (emp, ip))
+                self.pushToEmployee(emp, ip)
             else:
                 print "[sync] That's me: " + ip
                 settings["sshpath"]+'/percamcoonfig/; '

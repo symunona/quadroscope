@@ -33,10 +33,12 @@ class Player(State):
     def load_image(self, image, last = None):
         self.filename = self.path + image
         self.mode = 'standard'
-
-        image = pygame.image.load(self.filename)
-        self.dimensions = image.get_size()       
-        self.image = pygame.transform.scale(image, utils.screen['resolution'])
+        try:
+            image = pygame.image.load(self.filename)
+            self.dimensions = image.get_size()       
+            self.image = pygame.transform.scale(image, utils.screen['resolution'])
+        except:
+            print '[error] file corrupt ', self.filename
     
     def draw(self, surface):        
         if self.image != None:

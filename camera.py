@@ -28,7 +28,7 @@ for arg in sys.argv:
         updater.restart_employees()
         sys.exit()
     if arg == '--update':
-        updater = Updater(camerano, boss, True)        
+        updater = Updater(camerano, boss, True)                
         sys.exit()
         
 updater = Updater(camerano, boss, debug)

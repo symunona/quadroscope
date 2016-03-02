@@ -1,4 +1,4 @@
-import sys
+import sys, io, yuv2rgb, os
 import pygame
 
 from pygame import time
@@ -12,6 +12,12 @@ from utils import pygame_utils
 #from PIL import Image, ImageDraw, ImageFont
 
 def main(settings = None, boss = True, updater = None, camera_wrapper = None):
+
+    pitft = True
+    
+    if pitft:
+        os.putenv('SDL_VIDEODRIVER', 'fbcon')
+        os.putenv('SDL_FBDEV'      , '/dev/fb1')
 
     def fps(surface):
         milliseconds = clock.tick(fpslimit)        
@@ -40,15 +46,20 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
     camera_wrapper.camera.resolution = captureSize
     camera_wrapper.camera.rotation   = 180
     
-    camera_wrapper.camera.start_preview()
+    if not pitft:
+        camera_wrapper.camera.start_preview()
+    
+    # Buffers for viewfinder data
+    rgb = bytearray(320 * 240 * 3)
+    yuv = bytearray(320 * 240 * 3 / 2)
+    screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     
     state_stack = []    
          
-    main_state = MainState.MainState(state_stack, updater, camera_wrapper)
+    
     
     #screen = pygame.display.set_mode(screenSize,0)
-    camera_wrapper.camera.start_preview()
-    #camera_wrapper.camera.start_preview()
+    
     
     overlay_renderer = None
     overlay_renderer2 = None
@@ -59,13 +70,29 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
     # overlaySize =  (128,((screenSize[1] + 16) // 16) * 16,)
     
 #    print 'screenSize ',screenSize, (((screenSize[0] + 31) // 32) * 32, ((screenSize[1] + 15) // 16) * 16,)
-    surface_top = pygame.Surface(overlaySize, 0, 24)
-    surface_bottom = pygame.Surface(overlaySize, 0, 24)
+        
     
-   
+    # GUI State handler
+    main_state = MainState.MainState(state_stack, updater, camera_wrapper)
+    
     while True:
         
-        surface_top = pygame.Surface(overlaySize, 0, 24)
+        stream = io.BytesIO()        
+        camera_wrapper.camera.capture(stream, use_video_port=True, format='raw')
+        stream.seek(0)
+        stream.readinto(yuv)  # stream -> YUV buffer
+        stream.close()
+        yuv2rgb.convert(yuv, rgb, captureSize[0], captureSize[1])
+        
+        img = pygame.image.frombuffer(rgb[0:
+            (captureSize[0]* captureSize[1] * 3)],
+            captureSize, 'RGB')
+        
+        # surface_top = pygame.Surface(overlaySize, 0, 24)
+        
+        screen.blit(img,
+            ((320 - img.get_width() ) / 2,
+            (240 - img.get_height()) / 2))
 
 
         for event in pygame.event.get():             
@@ -75,27 +102,33 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
                 sys.exit()
             
             state_stack[0].event(event)
-            if event.type == pygame_utils.CHANGE_DISPLAY_SETTINGS:
-                if event.command == 'alpha':
-                    overlay_renderer.alpha = event.value
-                if event.command == 'readd':
-                    camera_wrapper.camera.remove_overlay(overlay_renderer)
-                    overlaySize = event.screenSize
-                    surface_top = pygame.Surface(overlaySize, 0, 24)                    
-                    overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
+            # if event.type == pygame_utils.CHANGE_DISPLAY_SETTINGS:
+                # if event.command == 'alpha':
+                #     overlay_renderer.alpha = event.value
+                # if event.command == 'readd':
+                #     camera_wrapper.camera.remove_overlay(overlay_renderer)
+                #     overlaySize = event.screenSize
+                #     surface_top = pygame.Surface(overlaySize, 0, 24)                    
+                #     overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
                     
-        fps(surface_top)
+        fps(screen)
             
-        state_stack[0].draw(surface_top)
+        state_stack[0].draw(screen)
                            
-        if not overlay_renderer:
-            overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);            
-        else:     
-            try:    
-                if overlay_renderer.alpha > 0:                       
-                    overlay_renderer.update(surface_top.get_buffer().raw)
-            except:
-                pass
+        if pitft:
+            pygame.display.update()
+        
+        else:
+            # if not overlay_renderer:
+            #     overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 0);            
+            # else:     
+            #     try:    
+            #         if overlay_renderer.alpha > 0:                       
+            #             overlay_renderer.update(surface_top.get_buffer().raw)
+            #     except:
+            #         pass
+            pass
+            
     
                 
                     

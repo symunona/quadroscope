@@ -70,7 +70,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
 
         for event in pygame.event.get():             
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
-                cam.stop()
+                camera_wrapper.camera.stop()
                 pygame.quit()
                 sys.exit()
             

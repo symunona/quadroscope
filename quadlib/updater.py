@@ -69,9 +69,11 @@ class Updater:
         
     def shutdown(self):
         self.send_to_all('sudo shutdown')
+        os.system('sudo shutdown')
 
     def reboot(self):
         self.send_to_all('sudo reboot')
+        os.system('sudo reboot')
 
     def step_file_id(self):
         camsettings = utils.load_camera_settings()
@@ -155,7 +157,7 @@ class Updater:
         self.restart_employee(ip)
 
     def restart_employees(self):
-        self.send_to_all("python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &')
+        self.send_to_all("pkill -f camera.py")
         self.send_to_all("python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &')
 
     def restart_employee(self, ip):
@@ -181,7 +183,7 @@ class Updater:
     def sync_camera_settings(self):
         
         for emp in self.employees:
-            ip = employees[emp]['ip']
+            ip = self.employees[emp]['ip']
             cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ root + '/../config/camerasettings.json ' + self.settings["sshusername"] +'@'+ip+':'+self.settings["sshpath"]+'config'
             print '[sync] updating camera ', str(emp)
             subprocess_cmd(cmd)

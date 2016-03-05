@@ -1,7 +1,10 @@
 import RPi.GPIO as GPIO
-import time
+import time, json, os
 
 CAMLED = 32
+
+root = os.path.dirname(__file__) + '/'
+employees = json.load(open(os.path.join(root, '../../config/employees.json')))
 
 class Gpio:
     def __init__(self, settings, boss):
@@ -41,8 +44,9 @@ class Gpio:
         GPIO.setup( self.employee_trigger_port , GPIO.IN )
         
     def trigger_employees(self,  val ):
-        # print '[triggering] ', str(self.employee_trigger_port), str(val)
-        GPIO.output( self.employee_trigger_port, val )
+        # print '[triggering] ', str(self.employee_trigger_port), str(val)        
+        gpios = map(lambda e: e[1]['gpio'], employees.items())        
+        GPIO.output( gpios, val )
 
 
     def wait_for_trigger(self):
@@ -61,12 +65,17 @@ class Gpio:
             port = self.employee_trigger_port
             
         GPIO.wait_for_edge(port, GPIO.FALLING)
-        
+            
         
     def init_boss(self):
     
         GPIO.setup( self.boss_trigger_port, GPIO.IN, pull_up_down = GPIO.PUD_UP )
-        GPIO.setup( self.employee_trigger_port , GPIO.OUT )
-        GPIO.output( self.employee_trigger_port, False )
+        
+        gpios = map(lambda e: e[1]['gpio'], employees.items())
+        for pin in gpios:
+            GPIO.setup( pin , GPIO.OUT )
+            GPIO.output( pin, False )
+
+        
         
         

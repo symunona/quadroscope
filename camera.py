@@ -33,12 +33,6 @@ for arg in sys.argv:
         
 updater = Updater(camerano, boss, debug)
 
-if (not boss):
-	bossip = open(root+'percamconfig/bossip', 'r').read().strip('\n')			
-else:
-	# employees = updater.push(settings)
-    pass
-
 print "[root] Camera number(change it in camerano file): " + str(camerano)
 
 gpio = Gpio(settings, boss)
@@ -61,5 +55,6 @@ if boss:
     from quadlib import gui 
     gui.main(settings, boss, updater, camera)
 else:
+    updater.pull()
     client.camera_loop( updater, gpio, camera )
 

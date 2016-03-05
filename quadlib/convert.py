@@ -6,7 +6,7 @@ def create_gif(id, employees, settings, camerasettings):
 
 
     cmd = 'convert -delay '+str(camerasettings['delay'])+' -size '
-    cmd += camerasettings['resolution'] + ' -loop 0 '
+    cmd += camerasettings['gifresolution'] + ' -loop 0 '
     foundpics = 0
     pictureCnt = len(employees.keys())
     for i in range(pictureCnt):

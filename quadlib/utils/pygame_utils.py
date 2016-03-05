@@ -21,6 +21,8 @@ fontobject = None
 largefontobject = None
 
 
+background = (128,128,128, 0.5)
+
 class Calc:
     @staticmethod
     def right(x):
@@ -46,7 +48,10 @@ def txt(surface, pos, message, color = (255, 255, 255), underline = False):
     
     if len(message) > 0:
         try:
-            surface.blit(fontobject.render(message, 1, color), (pos[0], pos[1]))
+            surface.blit(fontobject.render(message, 1, color, background), (pos[0], pos[1]))
+            #rendered = 
+            # rendered.set_alpha(128)
+            # surface.blit(rendered, (0, 0))
         except Exception, e: 
             print '[error] "%s"'% message, e
 

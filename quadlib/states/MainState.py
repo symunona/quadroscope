@@ -48,11 +48,12 @@ class MainState(State):
                     Power(self.stack, self.updater)
             
             if event.button == 1 :
-                self.scroller.set_value('overview')                 
+                self.camera.make_photos()
+                self.updater.sync_camera_settings()
             
             # see main parameters
             if event.button == 3 : 
-                self.camera.make_photos()
+                self.scroller.set_value('overview')                 
                 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1 :                 

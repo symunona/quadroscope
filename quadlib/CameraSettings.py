@@ -96,6 +96,13 @@ camera_settings = (
         'default': '1296x972',
         'live': False 
     },
+    {
+        'key': 'gifresolution',
+        'type': 'select',       
+        'values': '2592x1944 1296x972 640x480 320x240'.split(' '),
+        'default': '640x480',
+        'live': False 
+    },
     
     #======================= output
     {

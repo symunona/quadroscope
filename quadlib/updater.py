@@ -23,6 +23,9 @@ def ssh(ip):
         '-p ' + settings["sshpasswd"],
         'ssh',    
         settings["sshusername"] +'@'+ip]
+
+def download_files(ip, source, dest):
+    return subprocess_cmd('sshpass -p "' + settings["sshpasswd"] + '" scp '+settings["sshusername"] + '@'+ ip + ':' + source + ' ' + dest )
     
 
 class Updater:
@@ -176,17 +179,26 @@ class Updater:
                 self.pushToEmployee(emp, ip)
             else:
                 print "[sync] That's me: " + ip
-                settings["sshpath"]+'/percamcoonfig/; '
+                settings["sshpath"]+'/percamconfig/; '
                 os.system("echo " + emp + ' > ' + self.settings["sshpath"]+'percamconfig/camerano ')
-        
-              
+
+    def pull(self):
+    
+        print "[sync] getting settings from boss"
+        bossip = open(root+'../percamconfig/bossip', 'r').read().strip('\n')
+        source = root + '../percamconfig/camerasettings.json'
+        dest = root + '../percamconfig/'        
+        res = download_files(bossip, source, dest)
+        print res
+                  
                         
     def sync_camera_settings(self):
-        
+                
         for emp in self.employees:
             ip = self.employees[emp]['ip']
             cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ root + '/../config/camerasettings.json ' + self.settings["sshusername"] +'@'+ip+':'+self.settings["sshpath"]+'config'
             print '[sync] updating camera ', str(emp)
+            
             subprocess_cmd(cmd)
         return 
 

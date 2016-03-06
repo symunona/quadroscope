@@ -8,7 +8,7 @@ def create_gif(id, employees, settings, camerasettings):
     cmd = 'convert -delay '+str(camerasettings['delay'])+' -size '
     cmd += camerasettings['gifresolution'] + ' -loop 0 '
     foundpics = 0
-    pictureCnt = len(employees.keys())
+    pictureCnt = len(employees.keys())+1
     for i in range(pictureCnt):
         filename = utils.get_file_name_for_id(id, i+1)        
         if os.path.exists(filename):

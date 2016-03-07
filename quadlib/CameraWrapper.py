@@ -1,4 +1,4 @@
-import datetime, thread
+import datetime, thread, time
 from . import utils
 from . import CameraSettings
 from .utils import gpio
@@ -79,18 +79,22 @@ class CameraWrapper:
         utils.save_camera_settings(self.actual_camera_settings)
         
     def take_picture(self, filename):
-        self.gpio.camled(True)
-                
-        res = self.actual_camera_settings['resolution'].split('x')        
-        self.camera.resolution = (int(res[0]), int(res[1])) 
         
+        self.apply_camera_settings()
+        res = self.actual_camera_settings['resolution'].split('x')
+        self.camera.resolution = (int(res[0]), int(res[1])) 
         self.camera.capture(filename)
         self.camera.resolution = utils.screen['captureresolution']        
-        self.gpio.camled(False)
+        self.camled_blink()
                 
     def generate_file_id(self):
         return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
+        
+    def camled_blink(self):
+        def blinker(): time.sleep(0.1); self.gpio.camled(False)  
+        self.gpio.camled(True)
+        thread.start_new_thread(blinker, ())        
+        
     def make_photos(self):
 
         self.fileid = self.updater.get_next_file_id()        

@@ -1,5 +1,5 @@
 import utils
-import json, socket, os, time, thread
+import json, socket, os, time, thread, threading
 import convert
 import subprocess
 
@@ -196,13 +196,21 @@ class Updater:
                   
                         
     def sync_camera_settings(self):
-                
+        
+        threads = []        
         for emp in self.employees:
             ip = self.employees[emp]['ip']
             cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp '+ root + '/../config/camerasettings.json ' + self.settings["sshusername"] +'@'+ip+':'+self.settings["sshpath"]+'config'
             print '[sync] updating camera ', str(emp)
+            t = threading.Thread(target = subprocess_cmd, args = (cmd, ))
+            t.start()
+            threads.append(t)                        
+            #subprocess_cmd(cmd)
+        i = 0
+        for t in threads:
             
-            subprocess_cmd(cmd)
+            print '[sync] updated camera ', str(i)
+            i+=1
         return 
 
     def upload_photos(self, ip, file):

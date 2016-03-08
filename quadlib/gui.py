@@ -1,4 +1,4 @@
-import sys, io, yuv2rgb, os
+import sys, io, yuv2rgb, os, thread
 import pygame
 
 from pygame import time
@@ -75,6 +75,11 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
     # GUI State handler
     main_state = MainState.MainState(state_stack, updater, camera_wrapper)
     
+    thread.start_new_thread(pygame_utils.watch_trigger, ())
+    
+    preview = True
+    splash = None
+    
     while True:
         
         stream = io.BytesIO()        
@@ -94,13 +99,19 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
             ((320 - img.get_width() ) / 2,
             (240 - img.get_height()) / 2))
 
+        pygame_utils.splash(screen)
 
         for event in pygame.event.get():             
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                 camera_wrapper.camera.stop()
                 pygame.quit()
                 sys.exit()
-            
+            if event.type == pygame_utils.TAKE_PICTURE:
+                preview = False
+                state_stack[0].draw(screen)                
+                camera_wrapper.make_photos()                
+                updater.sync_camera_settings()
+                
             state_stack[0].event(event)
             # if event.type == pygame_utils.CHANGE_DISPLAY_SETTINGS:
                 # if event.command == 'alpha':
@@ -112,7 +123,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
                 #     overlay_renderer = camera_wrapper.camera.add_overlay(surface_top.get_buffer().raw, layer = 3, size = overlaySize, alpha = 64);
                     
         fps(screen)
-            
+        
         state_stack[0].draw(screen)
                            
         if pitft:

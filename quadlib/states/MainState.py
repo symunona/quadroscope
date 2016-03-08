@@ -48,9 +48,7 @@ class MainState(State):
                     Power(self.stack, self.updater)
             
             if event.button == 1 :
-                self.camera.make_photos()
-                self.updater.sync_camera_settings()
-            
+                pygame_utils.take_picture_event()           
             # see main parameters
             if event.button == 3 : 
                 self.scroller.set_value('overview')                 

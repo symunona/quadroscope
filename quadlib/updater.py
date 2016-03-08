@@ -30,6 +30,9 @@ def ssh(ip):
 def download_files(ip, source, dest):
     return subprocess_cmd('sshpass -p "' + settings["sshpasswd"] + '" scp '+settings["sshusername"] + '@'+ ip + ':' + source + ' ' + dest )
     
+def clean_python():
+    return 'find . -name "*.pyc" -exec rm -rf {} \;'
+
 
 class Updater:
 
@@ -101,42 +104,11 @@ class Updater:
     def get_output_file_name_for_id(self, id):
         return self.settings['uploadpath'] +'img-'+ '%04d' % id + '.gif'
 
-
-    def pushToEmployeeold(self, no, ip):
         
-        
-        cmd = 'pkill -f camera.py'
-        cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
-        
-        try:
-            os.system(cmde)
-        except OSError, e:
-            print "[sync] error running '%s' " % cmde, e
-                
-        print "[sync] Updating " + str(no) + " @" + ip	
-        cmd = "" 
-        cmd += "mkdir -p " + self.settings["sshpath"]+'percamconfig/; '
-        cmd += "cd " + self.settings["sshpath"]+'percamconfig/; '
-        cmd += "echo "+no+" > camerano; "
-        cmd += "echo '" + myip() + "' > bossip; "
-            
-        cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
-
-        try:
-            os.system(cmde)
-        except OSError, e:
-            print "[sync] error running '%s' " % cmde, e
-                
-        # print "[sync] sending files " + self.files_to_sync
-        
-        upload_cmd = 'sshpass -p "' + self.settings["sshpasswd"] + '" scp -r '+self.files_to_sync+' '+self.settings["sshusername"] + '@'+ ip + ':' + self.settings["sshpath"]		
-        # print upload_cmd
-        os.system(upload_cmd)
-
-        
+    
     def pushToEmployee(self, no, ip):
         
-        cmd = 'pkill -f camera.py'
+        cmd = 'sudo pkill -f camera.py'
         cmde = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
         
         res = subprocess_cmd(cmde)
@@ -144,6 +116,7 @@ class Updater:
                 
         print "[sync] Updating " + str(no) + " @" + ip	
         cmd = "" 
+        cmd += clean_python()
         cmd += "mkdir -p " + self.settings["sshpath"]+'percamconfig/; '
         cmd += "cd " + self.settings["sshpath"]+'percamconfig/; '
         cmd += "echo "+no+" > camerano; "
@@ -164,7 +137,7 @@ class Updater:
         self.restart_employee(ip)
 
     def restart_employees(self):
-        self.send_to_all("pkill -f camera.py")
+        self.send_to_all("sudo pkill -f camera.py")
         self.send_to_all("python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &')
 
     def restart_employee(self, ip):
@@ -183,7 +156,7 @@ class Updater:
             else:
                 print "[sync] That's me: " + ip
                 settings["sshpath"]+'/percamconfig/; '
-                os.system("echo " + emp + ' > ' + self.settings["sshpath"]+'percamconfig/camerano ')
+                os.system("echo 0 > " + self.settings["sshpath"]+'percamconfig/camerano ')
 
     def pull(self):
     
@@ -208,7 +181,7 @@ class Updater:
             #subprocess_cmd(cmd)
         i = 0
         for t in threads:
-            
+            t.join()
             print '[sync] updated camera ', str(i)
             i+=1
         return 

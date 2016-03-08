@@ -41,7 +41,7 @@ class Gpio:
         GPIO.output(CAMLED,False)
         
     def init_employee(self):    
-        GPIO.setup( self.employee_trigger_port , GPIO.IN )
+        GPIO.setup( self.employee_trigger_port , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         
     def trigger_employees(self,  val ):
         # print '[triggering] ', str(self.employee_trigger_port), str(val)        

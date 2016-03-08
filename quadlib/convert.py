@@ -18,7 +18,7 @@ def create_gif(id, employees, settings, camerasettings):
             print filename
     
     for i in range(foundpics-2):
-        filename = utils.get_file_name_for_id(id, foundpics-i-1)            
+        filename = utils.get_file_name_for_id(id, foundpics-i-2)            
         if os.path.exists(filename):
                 cmd += filename +' '
                 print filename

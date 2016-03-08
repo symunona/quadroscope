@@ -205,7 +205,7 @@ class Updater:
         print "[convert] waiting for files of " + str(id)
                 
         #lol, good enough for the demo...
-        time.sleep(2)
+        time.sleep(5)
 
         self.download_files_from_clients(id)
         

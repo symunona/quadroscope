@@ -1,0 +1,13 @@
+{
+    "sshusername": "pi",
+        "sshpasswd": "raspberry",
+        "sshpath": "/home/pi/quadroscope/",
+        "uploadpath": "/home/pi/upload/",
+
+    "gpioBossTriggerPort": 12,
+    "gpioHigh": 13,
+    "gpioEmployeeTriggerPort": 21,
+
+    "outputpath": "/home/pi/camera/"
+
+}

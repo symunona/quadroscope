@@ -1,5 +1,5 @@
 *
 
 !.gitignore
-!employees.example.json
+!*.example.json
 

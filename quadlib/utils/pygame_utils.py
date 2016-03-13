@@ -1,4 +1,4 @@
-import pygame
+import pygame, os
 from .. import utils
 import RPi.GPIO as GPIO
 
@@ -7,6 +7,11 @@ boss_trigger_port = 0
 
 CHANGE_DISPLAY_SETTINGS = pygame.USEREVENT + 2
 TAKE_PICTURE = pygame.USEREVENT + 3
+
+
+capturing_img = pygame.image.load(os.path.join(utils.rootpath, 'quadlib/assets/capture.png'))
+shutdown_img = pygame.image.load(os.path.join(utils.rootpath, 'quadlib/assets/shutdown.png'))
+
 
 def take_picture_event():
     pygame_event = pygame.event.Event(TAKE_PICTURE)

@@ -89,9 +89,10 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
         stream.close()
         yuv2rgb.convert(yuv, rgb, captureSize[0], captureSize[1])
         
-        img = pygame.image.frombuffer(rgb[0:
-            (captureSize[0]* captureSize[1] * 3)],
-            captureSize, 'RGB')
+        if preview:
+            img = pygame.image.frombuffer(rgb[0:
+                (captureSize[0]* captureSize[1] * 3)],
+                captureSize, 'RGB')
         
         # surface_top = pygame.Surface(overlaySize, 0, 24)
         
@@ -103,12 +104,14 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
 
         for event in pygame.event.get():             
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+                screen.blit(pygame_utils.shutdown_img, (0,0) )
+                pygame.display.update()                        
                 camera_wrapper.camera.stop()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame_utils.TAKE_PICTURE:
-                preview = False
-                state_stack[0].draw(screen)                
+                screen.blit(pygame_utils.capturing_img, (0,0) )
+                pygame.display.update()                                    
                 camera_wrapper.make_photos()                
                 updater.sync_camera_settings()
                 

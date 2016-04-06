@@ -28,3 +28,6 @@ This is because one GPIO output has problem driving 3 different PI's input.
 
 - This is a fast prototype.
 - This is my first python project.
+
+Created in [MeetLab](http://meetlab.hu) Budapest
+

@@ -1,3 +1,8 @@
+#
+# Quadroscope employee updater
+#
+# This file sends the new codebase to the employees and restarts the code.
+
 import utils
 import json, socket, os, time, thread, threading
 import convert
@@ -5,31 +10,33 @@ import subprocess
 
 settings = None
 
-
-
 root = os.path.dirname(__file__) + '/'
 
+# Returns the current user's IP
 def myip():
     try:
 	   return ([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
     except:
        return ''
 
+# Runs a command in bash.
 def subprocess_cmd(command):
     process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
     proc_stdout = process.communicate()[0].strip()
     return proc_stdout
 
-
+# Returns the string to connect to a remote
 def ssh(ip):
     return ['sshpass"',
         '-p ' + settings["sshpasswd"],
         'ssh',    
         settings["sshusername"] +'@'+ip]
 
+# Downloads/uploads files from an IP
 def download_files(ip, source, dest):
     return subprocess_cmd('sshpass -p "' + settings["sshpasswd"] + '" scp '+settings["sshusername"] + '@'+ ip + ':' + source + ' ' + dest )
-    
+
+# Kills all python processes.
 def clean_python():
     return 'find . -name "*.pyc" -exec rm -rf {} \;'
 
@@ -52,7 +59,7 @@ class Updater:
         self.files_to_sync = ' '.join(map(withroot, files))                 
         self.employees = json.load(open(os.path.join(root, '../config/employees.json')))                  
         
-        #update client code
+        # Update client code.
         if boss:                
             if debug: 
                 print '[sync] updating clients'
@@ -61,8 +68,8 @@ class Updater:
                 self.restart_employees()
                 self.sync_camera_settings()
         
+    # Sends a ceratain command to one IP
     def send_to_one(self, cmd, ip):
-
         cmdd = 'sshpass -p "' + self.settings["sshpasswd"] + '" ssh '+self.settings["sshusername"] +'@'+ip+' "'+cmd+'"'
         try:
             print '[sync] cmd: %s' % cmdd
@@ -70,21 +77,24 @@ class Updater:
         except OSError, e:
             print "[sync] error running '%s' " % cmdd, e 
         
+    # Sends the given command to all the employees
     def send_to_all(self, cmd):
         for emp in self.employees:
             ip = self.employees[emp]['ip']
             if (ip == myip()): continue
             thread.start_new_thread(self.send_to_one,(cmd, ip ))
         
-        
+    # Shuts the system down.
     def shutdown(self):
         self.send_to_all('sudo shutdown')
         os.system('sudo shutdown')
 
+    # Reboots the system
     def reboot(self):
         self.send_to_all('sudo reboot')
         os.system('sudo reboot')
 
+    # Increases the current file ID 
     def step_file_id(self):
         camsettings = utils.load_camera_settings()
         id = camsettings['nextid'] 
@@ -92,15 +102,14 @@ class Updater:
         camsettings['nextid'] = int(camsettings['nextid']) + 1
         utils.save_camera_settings(camsettings)
         
-        
-    def get_next_file_id(self):
-        
+    # Reads next file ID from file.
+    def get_next_file_id(self):        
         camsettings = utils.load_camera_settings()
         id = camsettings['nextid'] 
         print '[img id ]', id        
         return id
                 
-
+    # Generates the gif file name.
     def get_output_file_name_for_id(self, id):
         return self.settings['uploadpath'] +'img-'+ '%04d' % id + '.gif'
 
@@ -193,6 +202,8 @@ class Updater:
     def download_photos(self, ip, file, target):
         os.system('sshpass -p "' + self.settings["sshpasswd"] + '" scp '+self.settings["sshusername"] + '@'+ ip + ':' + file + ' /'+ target )
 
+    def status(self)
+        
 
     def download_files_from_clients(self, id):
         

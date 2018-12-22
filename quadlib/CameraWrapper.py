@@ -8,6 +8,7 @@ class CameraWrapper:
     
     def __init__(self, camera, updater, gpio, boss, camerano):        
         self.camera = camera
+        # TODO: Lib MMAL: read and write camera settings ITT
         self.actual_camera_settings = utils.load_camera_settings()
         self.property_map = []
         self.boss = boss

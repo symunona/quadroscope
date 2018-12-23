@@ -64,7 +64,8 @@ for arg in sys.argv:
         push = False
         
 updater = Updater(camerano, boss, debug)
-updater.push()
+if boss:
+    updater.push()
 
 log("[root] Camera number(change it in camerano file): " + str(camerano))
 

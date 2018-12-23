@@ -40,7 +40,7 @@ def subprocess_cmd(command):
 
 # Kills all python processes.
 def clean_python():
-    return 'find . -name "*.pyc" -exec rm -rf {} \;'
+    return 'sudo find . -name \'*.pyc\' -exec rm -rf {} \;'
 
 
 class Updater:
@@ -57,7 +57,7 @@ class Updater:
         self.user = self.settings["sshusername"]
         files = json.load(open(os.path.join(root, 'sync.json')))
 
-        self.start_command = "stdbuf -oL python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &'
+        self.start_command = "sudo stdbuf -oL python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &'
 
         def withroot(r):
             return root + '../' + r
@@ -78,7 +78,7 @@ class Updater:
 
 
     # Downloads/uploads files from an IP
-    def download_files(ip, source, dest):
+    def download_files(self, ip, source, dest):
         return subprocess_cmd('scp ' + self.user + '@' + ip + ':' +
                           source + ' ' + dest)
 
@@ -139,13 +139,14 @@ class Updater:
 
         cmde = 'ssh ' + self.user + '@' + ip + ' "' + cmd + '"'
 
-        utils.log('[sync] res: ', subprocess_cmd(cmde))
+        # utils.log('[sync] cmde: ', cmde)
+        utils.log('[sync] res clean and config: ', subprocess_cmd(cmde))
 
         # utils.log("[sync] sending files " + self.files_to_sync)
 
         upload_cmd = 'scp -r ' + self.files_to_sync + ' ' + self.user + '@' + ip + ':' + self.settings["sshpath"]
         # utils.log(upload_cmd)
-        utils.log('[sync] res: ', subprocess_cmd(upload_cmd))
+        utils.log('[sync] res upload: ', subprocess_cmd(upload_cmd))
 
         self.restart_employee(ip)
 
@@ -155,8 +156,8 @@ class Updater:
 
     def restart_employee(self, ip):
         restartscript = "ssh " + self.settings[
-                "sshusername"] + '@' + ip + ' "'
-        restartscript += self.start_command
+                "sshusername"] + '@' + ip + ' '
+        restartscript += '"' + self.start_command + '"'
         utils.log('[sync] [restart] %s', ip, subprocess_cmd(restartscript))
 
     def push(self):
@@ -173,14 +174,13 @@ class Updater:
                 os.system("echo 0 > " + self.settings["sshpath"] +
                           'percamconfig/camerano ')
 
-    # def pull(self):
-
-    #     utils.log("[sync] getting settings from boss")
-    #     bossip = open(root + '../percamconfig/bossip', 'r').read().strip('\n')
-    #     source = root + '../config/camerasettings.json'
-    #     dest = root + '../config/'
-    #     res = download_files(bossip, source, dest)
-    #     utils.log(res)
+    def pull(self):
+        utils.log("[sync] getting settings from boss")
+        bossip = open(root + '../percamconfig/bossip', 'r').read().strip('\n')
+        source = root + '../config/camerasettings.json'
+        dest = root + '../config/'
+        res = self.download_files(bossip, source, dest)
+        utils.log(res)
 
     def sync_camera_settings(self):
         threads = []

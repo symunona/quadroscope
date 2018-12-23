@@ -1,0 +1,7 @@
+#!/bin/sh
+
+directory=/home/symunona/dev/q/quadroscope
+target="-e ssh q1:/home/pi/quadroscope"
+while inotifywait -r -e modify,create,delete $directory; do
+    rsync -avz $directory $target
+done

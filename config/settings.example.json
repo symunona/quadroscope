@@ -1,6 +1,5 @@
 {
-    "sshusername": "pi",
-        "sshpasswd": "raspberry",
+    "sshusername": "pi",        
         "sshpath": "/home/pi/quadroscope/",
         "uploadpath": "/home/pi/upload/",
 

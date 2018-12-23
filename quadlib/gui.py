@@ -8,6 +8,7 @@ import utils
 from utils import mouse
 from utils import pygame_utils
 
+from quadlib.utils import log
 
 #from PIL import Image, ImageDraw, ImageFont
 
@@ -23,9 +24,11 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
         milliseconds = clock.tick(fpslimit)        
         pygame_utils.txt(surface, (utils.screen['resolution'][0] - 30, utils.screen['margin']), str(round(clock.get_fps())))
         
-       
+    log('[GUI] initing pygame')
     #pygame init
     pygame.init()    
+
+    log('[GUI] inited pygame')
     pygame.mouse.set_visible(False)    
     
     # screen resolution: http://www.purdyelectronics.com/pdf/AND-TFT-25PA.pdf
@@ -40,7 +43,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
     clock = time.Clock()
 
     if camera_wrapper == None: 
-        print '[error] no camera object'
+        log('[error] no camera object')
 
     # settin up camera   
     camera_wrapper.camera.resolution = captureSize
@@ -69,7 +72,7 @@ def main(settings = None, boss = True, updater = None, camera_wrapper = None):
     overlaySize =  (((screenSize[0] + 31) // 32) * 32,((screenSize[1] + 15) // 16) * 16,)
     # overlaySize =  (128,((screenSize[1] + 16) // 16) * 16,)
     
-#    print 'screenSize ',screenSize, (((screenSize[0] + 31) // 32) * 32, ((screenSize[1] + 15) // 16) * 16,)
+#    log('screenSize ',screenSize, (((screenSize[0] + 31) // 32) * 32, ((screenSize[1] + 15) // 16) * 16,))
         
     
     # GUI State handler
@@ -153,4 +156,4 @@ if __name__ == '__main__':
     # try:
     #     main()
     # except:
-    #     print 'Unexpected error : ', sys.exc_info()[0], sys.exc_info()[1]
+    #     log('Unexpected error : ', sys.exc_info()[0], sys.exc_info()[1])

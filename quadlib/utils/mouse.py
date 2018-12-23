@@ -3,6 +3,8 @@ from select import select
 import pygame
 import thread
 
+from quadlib.utils import log
+
 MOUSEWHEEL = pygame.USEREVENT + 1
 
 def mouse_event_listener():
@@ -17,6 +19,6 @@ def mouse_event_listener():
                     pygame.event.post(pygame_event)
                     # print(event.value)
         except:
-            print '[Mouse error] magic ', sys.exc_info()[0]
+            log('[Mouse error] magic ', sys.exc_info()[0])
                 
 thread.start_new_thread( mouse_event_listener, () )

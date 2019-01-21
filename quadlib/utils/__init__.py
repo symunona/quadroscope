@@ -63,8 +63,6 @@ def limit(min, max, value):
 def trace():
     for line in traceback.format_stack():
         print(line.strip())
-    
-
 
 def log( *args ):
     global camerano    

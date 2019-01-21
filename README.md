@@ -39,16 +39,13 @@ This is because one GPIO output has problem driving 3 different PI's input.
 
 ssh into boss.
 
-Run `./log` to see the live output of all the cameras.
-![this is the first test picture](https://external.xx.fbcdn.net/safe_image.php?d=AQDgC7bbt9VW-qar&url=http%3A%2F%2Fvintagedigitalism.hu%2Fwp-content%2Fuploads%2F2016%2F03%2Funnamed1.gif&ext=gif)
+`./log` to see the live output of all the cameras.
 
+`./status` to see if all the other pi's are in 
 
 
 
 # disclaimer
-=======
-# Disclaimer
->>>>>>> e92d1372b7f9709381dce8ca17334731de048176
 
 - This is my first python project.
 

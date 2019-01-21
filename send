@@ -1,6 +1,9 @@
 
 #!/bin/sh
 CMD="$1"
+
+# TODO: dynamically query who is around!
+
 echo "boss: " $(ssh boss "$CMD")
 echo "emp1: " $(ssh pi@emp1 "$CMD")
 echo "emp2: " $(ssh pi@emp2 "$CMD")

@@ -1,11 +1,15 @@
 
 import os, json
 import traceback
+from datetime import datetime
 
 from ..updater import Updater 
 
 
 rootpath = os.path.dirname(os.path.realpath(__file__)) + '/../../'
+
+camerano = open(rootpath + 'percamconfig/camerano', 'r').read().strip('\n')
+
 
 camera_settings_path = rootpath + 'config/camerasettings.json'
 settings = json.load(open(rootpath + 'config/settings.json'))
@@ -59,4 +63,11 @@ def limit(min, max, value):
 def trace():
     for line in traceback.format_stack():
         print(line.strip())
+    
+
+
+def log( *args ):
+    global camerano    
+    timestamp = datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]    
+    print '['+ camerano+ '][' + timestamp + '] ' + (' '.join(map(str, args)))
     

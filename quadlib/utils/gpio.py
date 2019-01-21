@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 import time, json, os
 
+from quadlib.utils import log
+
 CAMLED = 32
 
 root = os.path.dirname(__file__) + '/'
@@ -44,7 +46,7 @@ class Gpio:
         GPIO.setup( self.employee_trigger_port , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         
     def trigger_employees(self,  val ):
-        # print '[triggering] ', str(self.employee_trigger_port), str(val)        
+        # log('[triggering] ', str(self.employee_trigger_port), str(val)        )
         gpios = map(lambda e: e[1]['gpio'], employees.items())        
         GPIO.output( gpios, val )
 
@@ -54,9 +56,9 @@ class Gpio:
             port = self.boss_trigger_port
         else: 
             port = self.employee_trigger_port
-        # print '[main_loop] waiting for trigger on ', str(port)
+        # log('[main_loop] waiting for trigger on ', str(port))
         GPIO.wait_for_edge(port, GPIO.RISING)
-        print '[main_loop] TRIGGERED ', str(port)
+        log('[main_loop] TRIGGERED ', str(port))
         
     def wait_for_release(self):
         if self.boss:

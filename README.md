@@ -4,12 +4,8 @@ A four cameara raspberry stack system. It is supposed to create
 animated GIFs out of 4 simultaneously created pictures made by 4
 separate raspberry cameras.
 
-![picture of the prototype](https://scontent.xx.fbcdn.net/hphotos-xlf1/v/t1.0-9/s851x315/12805937_10208660986223581_7170312309384191205_n.jpg?oh=e237d1c186081c04a7dcfc21703c61ec&oe=578EE89D)
-
-![this is the first test picture](https://external.xx.fbcdn.net/safe_image.php?d=AQDgC7bbt9VW-qar&url=http%3A%2F%2Fvintagedigitalism.hu%2Fwp-content%2Fuploads%2F2016%2F03%2Funnamed1.gif&ext=gif)
-
-[more pics](https://www.facebook.com/matyas.csiszar/posts/10208660988103628)
-
+![picture of the prototype](assets/camera-1.jpg)
+![picture of the prototype](assets/camera-2.jpg)
 
 # notes
 
@@ -23,6 +19,16 @@ prototype we did not adress certain problems. The system is not roboust
 2,2 tft screen. 
 - timing is solved through 3 separate GPIO channels being sent out by the master PI. 
 This is because one GPIO output has problem driving 3 different PI's input.
+
+# tools & useful commands
+
+ssh into boss.
+
+Run `./log` to see the live output of all the cameras.
+![this is the first test picture](https://external.xx.fbcdn.net/safe_image.php?d=AQDgC7bbt9VW-qar&url=http%3A%2F%2Fvintagedigitalism.hu%2Fwp-content%2Fuploads%2F2016%2F03%2Funnamed1.gif&ext=gif)
+
+
+
 
 # disclaimer
 

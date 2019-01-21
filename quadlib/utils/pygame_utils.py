@@ -2,6 +2,8 @@ import pygame, os
 from .. import utils
 import RPi.GPIO as GPIO
 
+from quadlib.utils import log
+
 screen = utils.screen
 boss_trigger_port = 0
 
@@ -64,7 +66,7 @@ def txt(surface, pos, message, color = (255, 255, 255), underline = False):
             # rendered.set_alpha(128)
             # surface.blit(rendered, (0, 0))
         except Exception, e: 
-            print '[error] "%s"'% message, e
+            log('[error] "%s"'% message, e)
 
 def txt_large(surface, pos, message, color = (255, 255, 255), underline = False):
     global largefontobject
@@ -97,7 +99,7 @@ def init_boss_trigger():
 def wait_for_boss_trigger():
     global boss_trigger_port    
     GPIO.wait_for_edge(boss_trigger_port, GPIO.RISING)
-    print '[watchloop] TRIGGERED ', str(boss_trigger_port)
+    log('[watchloop] TRIGGERED ', str(boss_trigger_port))
 
 def wait_for_boss_release():
     global boss_trigger_port

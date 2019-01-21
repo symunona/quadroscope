@@ -1,0 +1,9 @@
+
+#!/bin/sh
+#CMD="tail -f ~/kamera.log &"
+#echo "boss: " $(ssh boss "$CMD")
+#echo "emp1: " $(ssh pi@emp1 "$CMD")
+#echo "emp2: " $(ssh pi@emp2 "$CMD")
+#echo "emp3: " $(ssh pi@emp3 "$CMD")
+
+ssh boss "tail -f ~/kamera.log" & ssh emp1 "tail -f ~/kamera.log" & ssh emp2 "tail -f ~/kamera.log" & ssh emp3 "tail -f ~/kamera.log" &

@@ -2,6 +2,8 @@ import utils
 import convert
 import time
 
+from quadlib.utils import log
+
 def make_photos(updater, fileid, filename, camera):
 
     # if boss, then upload settings to other cameras
@@ -10,7 +12,7 @@ def make_photos(updater, fileid, filename, camera):
             
     # mode 1: it downloads the files 
     # if not isBoss:
-    #     print "[listener] i am an employee. Uploading image to boss@" + bossip		
+    #     log("[listener] i am an employee. Uploading image to boss@" + bossip		)
     #     updater.upload_photo(filename, bossip, settings)
 
     print("[listener] Picture took. Listening.")
@@ -23,7 +25,7 @@ def camera_loop(updater, gpio, camera):
         fileid = updater.get_next_file_id()        
         filename = utils.get_file_name_for_id(fileid)
     
-        print '[waiting for image] ', fileid    
+        log('[waiting for image] ', fileid)
         gpio.wait_for_trigger()                     # ____/
             
         camera.reload_camera_settings()

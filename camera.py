@@ -7,7 +7,7 @@
 import os, os.path, sys, json, time, thread, datetime
 import picamera
  
-
+from quadlib.utils import log
 from quadlib import convert
 from quadlib.updater import Updater
 from quadlib.utils.gpio import Gpio
@@ -15,9 +15,9 @@ from quadlib import client
 from quadlib.CameraWrapper import CameraWrapper
 
 root = os.path.dirname(__file__) + '/'
-
-print '[root] ', root
-print '[__file__] ', __file__
+log('[startup] ----------------------------------------', time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.localtime()))
+log('[root] ', root)
+log('[__file__] ', __file__)
 
 # Read the settings from the `config` and `percamconfig` folders.
 # settings.json stores generic data:
@@ -43,6 +43,7 @@ hflip = os.path.isfile(root+'percamconfig/hflip')
 camerano = open(root+'percamconfig/camerano', 'r').read().strip('\n')
         
 debug = False
+push = True
 
 # FLAGS:
 #   -- debug: I have no clue what it does.
@@ -55,10 +56,18 @@ for arg in sys.argv:
     if arg == '--update':
         updater = Updater(camerano, boss, True)                
         sys.exit()
+    if arg == '--status':
+        updater = Updater(camerano, boss, True)                
+        updater.status()
+        sys.exit()
+    if arg == '--nopush':
+        push = False
         
 updater = Updater(camerano, boss, debug)
+if boss:
+    updater.push()
 
-print "[root] Camera number(change it in camerano file): " + str(camerano)
+log("[root] Camera number(change it in camerano file): " + str(camerano))
 
 gpio = Gpio(settings, boss)
 
@@ -73,7 +82,7 @@ camera = CameraWrapper(picam_object, updater, gpio, boss, camerano)
 # show user that we are starting
 gpio.blinkCamera(4)
     
-print "[listener] listening on port " + str(gpio.port)
+log( "[listener] listening on port " + str(gpio.port))
 
 # start camera loop
 if boss:

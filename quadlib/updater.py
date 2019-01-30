@@ -40,7 +40,7 @@ def subprocess_cmd(command):
 
 # Kills all python processes.
 def clean_python():
-    return 'sudo find . -name \'*.pyc\' -exec rm -rf {} \;'
+    return 'sudo find . -name \'*.pyc\' -exec rm -rf {} ;'
 
 
 class Updater:
@@ -57,8 +57,9 @@ class Updater:
         self.user = self.settings["sshusername"]
         files = json.load(open(os.path.join(root, 'sync.json')))
 
-        self.start_command = "sudo stdbuf -oL python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &'
+        #self.start_command = "sudo python " + self.settings["sshpath"] +'camera.py &'
 
+        self.start_command = "sudo stdbuf -oL python " + self.settings["sshpath"] +'camera.py > /home/pi/kamera.log &'
         def withroot(r):
             return root + '../' + r
 

@@ -4,9 +4,11 @@
 #   The four camera system for raspberries.
 #   
 
-import os, os.path, sys, json, time, thread, datetime
+import os, os.path, sys, json, time, thread, datetime, logging
 import picamera
- 
+
+logging.basicConfig(filename='camera.log', level=logging.DEBUG)
+
 from quadlib.utils import log
 from quadlib import convert
 from quadlib.updater import Updater

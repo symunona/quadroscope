@@ -3,6 +3,14 @@ import os, json
 import traceback
 from datetime import datetime
 
+import logging, sys
+from LoggerWriter import LoggerWriter
+
+logger = logging.getLogger('q')
+sys.stdout = LoggerWriter(logger.debug)
+sys.stderr = LoggerWriter(logger.warning)
+
+
 from ..updater import Updater 
 
 
@@ -67,5 +75,5 @@ def trace():
 def log( *args ):
     global camerano    
     timestamp = datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]    
-    print '['+ camerano+ '][' + timestamp + '] ' + (' '.join(map(str, args)))
+    logger.info('['+ camerano+ '][' + timestamp + '] ' + (' '.join(map(str, args))))
     

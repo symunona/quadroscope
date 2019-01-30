@@ -16,10 +16,17 @@ TODO: collect pip dependencies
 - check the code out
 - generate an ssh key for the `root` (!!!) user of boss
     - NOTE: the raspberries have to know each other in order to be able to upload/download files from each other
+    - It's good to name the raspberries to `boss`, `emp1`, `emp2`, `emp3`
+    - generate a key via `sudo ssh-keygen -f .ssh/id_rsa`
+    -
 - link up the other raspberries
 - exchange ssh keys with `ssh-copy-id` so you can log in seamlessly!
 - peferably set a descriptive name for each raspberry in `/etc/hostname` so you can use that in `employees.json`
 - set up config files in `config` folder by the examples
+
+# Configuration files
+
+
 
 # Troubleshooting
 
@@ -42,7 +49,6 @@ ssh into boss.
 `./log` to see the live output of all the cameras.
 
 `./status` to see if all the other pi's are in 
-
 
 
 # disclaimer
